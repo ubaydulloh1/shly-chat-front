@@ -1,0 +1,24 @@
+body{
+    scroll-behavior: smooth;
+    scrollbar-width: thin !important;
+}
+
+.is-cursor-pointable{
+    cursor: pointer;
+}
+
+.is-clickable-input-icon{
+    pointer-events: initial !important;
+    cursor: pointer;
+    color: #aaa;
+}
+.is-clickable-input-icon:hover{
+    pointer-events: initial !important;
+    cursor: pointer;
+}
+.image img{
+    object-fit: cover !important;
+    object-position: center;
+    height: 100%;
+    width: 100%;
+  }
