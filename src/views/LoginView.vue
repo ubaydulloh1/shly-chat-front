@@ -40,6 +40,7 @@ export default {
                 this.$store.commit("setAccess", access)
                 this.$store.commit("setRefresh", refresh)
                 axios.defaults.headers.common["Authorization"] = "Bearer " + access
+                this.$emit("loggedIn")
                 this.$router.push("/")
 
             })

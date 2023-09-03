@@ -19,14 +19,37 @@ export default {
     }
   },
   methods: {
+    handleLoggedIn(){
+      this.isUserLogged = true
+      this.fetchMe()
+    },
     handleLogout(){
       this.$store.commit("removeAccess")
       this.$store.commit("removeRefresh")
+      this.isUserLogged = false
       this.$router.push("/login")
     },
     toggleProfileHeader(){
       this.showProfileHeaderModal = !this.showProfileHeaderModal
+    },
+    fetchMe(){
+      if (this.isUserLogged){
+      axios.get("/accounts/me/")
+      .then(response => {
+        if (response.status == 200){
+          return response.data
+        }
+      })
+      .then(data => {
+        this.userProfile.id = data.id
+        this.userProfile.username = data.username
+        this.userProfile.avatar = data.avatar ? data.avatar : this.userProfile.avatar
+      })
+      .catch(error => {
+        console.log(error)
+      })
     }
+    },
   },
   beforeCreate(){
     this.$store.commit("initializeStore")
@@ -46,23 +69,8 @@ export default {
     }
   },
   mounted(){
-    if (this.isUserLogged){
-      axios.get("/accounts/me/")
-      .then(response => {
-        if (response.status == 200){
-          return response.data
-        }
-      })
-      .then(data => {
-        this.userProfile.id = data.id
-        this.userProfile.username = data.username
-        this.userProfile.avatar = data.avatar ? data.avatar : this.userProfile.avatar
-      })
-      .catch(error => {
-        console.log(error)
-      })
-    }
-  }
+    this.fetchMe()
+  },
 }
 </script>
 
@@ -104,9 +112,7 @@ export default {
     </div>
   </nav>
 
-
-  <router-view :myId="userProfile.id"/>
-
+  <router-view :myId="userProfile.id" @loggedIn="handleLoggedIn"/>
 
 </template>
 
