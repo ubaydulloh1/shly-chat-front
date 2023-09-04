@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  vue:
+    image: shly-uz-chat-vue-front:1.0.0
+    container_name: shly_uz_chat_vue_front
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8046:80"
+    restart:
+      always
