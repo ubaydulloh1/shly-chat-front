@@ -366,7 +366,7 @@ export default {
           </div>
 
           <form @submit.prevent="handleSendMessage">
-              <div class="field has-addons my-3 px-6">
+              <div class="field has-addons my-3 px-1">
                   <div class="control">
                       <button class="button is-outlined is-success is-medium">
                           <i class="far fa-smile is-size-5"></i>
@@ -433,5 +433,9 @@ export default {
 }
 .load-more i{
   animation: loaderRotate 1.5s infinite ease;
+}
+form {
+  position: sticky;
+  bottom: 0;
 }
 </style>

@@ -33,10 +33,10 @@ export default {
 <template>
   <div class="home">
     <div class="columns">
-      <div class="column is-3">
+      <div class="column">
         <SidebarView @selectedChat="chatSelected"/>
       </div>
-      <div class="column is-9">
+      <div class="column">
         <ChatWindowView v-if="isChatSelected" :chatId="selectedChatId" :myId="myId" />
         <dev v-else class="">
           <p>Please select chat to message.</p>

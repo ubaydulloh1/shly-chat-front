@@ -10,6 +10,7 @@ export default {
   data(){
     return {
       isUserLogged: false,
+      showNavbarMenu: false,
       showProfileHeaderModal: false,
       userProfile: {
         "id": null,
@@ -78,23 +79,20 @@ export default {
 <template>
   <nav class="navbar py-0" role="navigation" aria-label="main navigation">
 
-    <div id="navbarBasicExample" class="navbar-menu">
+    <div id="navbarBasicExample" class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between">
       <div class="navbar-start">
         <a class="navbar-item">
           <router-link to="/">Home</router-link>
         </a>
       </div>
       
-      <div class="navbar-end" v-if="!isUserLogged">
+      <div class="navbar-end is-flex-mobile" v-if="!isUserLogged">
         <div class="navbar-item">
-          <router-link to="/login/">Login</router-link>
-        </div>
-        <div class="navbar-item">
-          <router-link to="/register/">Register</router-link>
+          <router-link to="/login/">Sign in</router-link>
         </div>
       </div>
 
-      <div class="navbar-end" v-else>
+      <div class="navbar-end is-flex" v-else>
         <div class="is-flex py-2 px-5">
           <figure class="image is-32x32 is-cursor-pointable" @click="toggleProfileHeader">
             <img class="is-rounded" :src="userProfile.avatar">
@@ -137,5 +135,11 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar-menu {
+    box-shadow: none !important;
+  } 
 }
 </style>

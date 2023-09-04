@@ -58,10 +58,10 @@ export default {
 
 <template>
   <div>
-    <h2 class="is-size-4 py-4 has-text-left">Messages</h2>
-    <div class="field">
-      <p class="control has-icons-left">
-        <input class="input is-success" type="text" placeholder="Search"/>
+    <h2 class="is-size-4 is-size-6-mobile px-2 pb-2 has-text-left">Chats</h2>
+    <div class="field px-1">
+      <p class="control has-icons-left is-size-6-mobile">
+        <input class="input is-success is-size-6-mobile" type="text" placeholder="Search"/>
         <span class="icon is-small is-left">
           <i class="fa-solid fa-magnifying-glass"></i>
         </span>
@@ -70,22 +70,22 @@ export default {
 
     <div class="chats-container">
       
-      <div @click="toggleArchived" v-if="!isArchivedOpen" class="archived-chat has-background-grey-light has-text-white p-4" onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false">
+      <div @click="toggleArchived" v-if="!isArchivedOpen" class="archived-chat has-background-grey-light has-text-white p-2" onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false">
         <div class="is-flex">
-            <div class="is-3 px-4 is-flex is-justify-content-center">
-              <div class="has-background-light has-text-grey is-flex is-justify-content-center is-align-items-center" style="width: 30px; height: 30px; border-radius: 50%;">
+            <div class="px-4 is-flex is-justify-content-center">
+              <div class="is-size-7-mobile has-background-light has-text-grey is-flex is-justify-content-center is-align-items-center" style="width: 30px; height: 30px; border-radius: 50%;">
                 <i class="fa-solid fa-box-archive"></i>
               </div>
             </div>
-            <div class="">
+            <div class="is-size-7-mobile">
               <p class="has-text-center">Archived conversations</p>
-              <p class="is-size-6">2 conversations</p>
+              <p class="has-text-center">2 conversations</p>
             </div>
         </div>
       </div>
 
       <div @click="toggleArchived" v-else class="close-archived-chat has-background-danger p-4" onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false">
-          <p class="is-size-6"><i class="fa-solid fa-xmark"></i> close</p>
+          <p class="is-size-6 is-size-7-mobile"><i class="fa-solid fa-xmark"></i> close</p>
       </div>
 
       <div id="chat-list" class=""> <!-- has-background-white-ter -->
