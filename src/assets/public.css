@@ -1,6 +1,15 @@
+*{
+    box-sizing: border-box;
+}
+html{
+    height: 100vh;
+    /* overflow: hidden; */
+}
 body{
     scroll-behavior: smooth;
     scrollbar-width: thin !important;
+    box-sizing: border-box;
+    height: 100%;
 }
 
 .is-cursor-pointable{
@@ -21,4 +30,4 @@ body{
     object-position: center;
     height: 100%;
     width: 100%;
-  }
+}

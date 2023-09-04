@@ -77,9 +77,9 @@ export default {
 
 
 <template>
-  <nav class="navbar py-0" role="navigation" aria-label="main navigation">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
 
-    <div id="navbarBasicExample" class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between">
+    <div id="navbarBasicExample" class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between py-0">
       <div class="navbar-start">
         <a class="navbar-item">
           <router-link to="/">Home</router-link>
@@ -110,8 +110,9 @@ export default {
     </div>
   </nav>
 
-  <router-view :myId="userProfile.id" @loggedIn="handleLoggedIn"/>
+  <router-view class="router-view" :myId="userProfile.id" @loggedIn="handleLoggedIn"/>
 
+  <!-- <div>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Saepe exercitationem quam quidem voluptas odio atque tenetur sapiente voluptatibus perferendis qui quas, dolore cum iste? Soluta quisquam quasi iste facilis ipsum!</div> -->
 </template>
 
 
@@ -121,13 +122,21 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  height: 100%;
+  /* overflow-y: auto; */
 }
+
 .navbar{
-  top: 0;
-  position: sticky !important;
-  width: 100%;
+    height: 50px;
+    top: 0;
+    position: sticky !important;
+    width: 100%;
 }
+
+.router-view{
+  height: calc(100% - 52px);
+}
+
 nav a {
   font-weight: bold;
   color: #2c3e50;

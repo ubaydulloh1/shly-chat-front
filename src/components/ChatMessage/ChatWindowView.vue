@@ -224,6 +224,9 @@ export default {
             }, 1000)
 
           }
+    },
+    handleBackToChats(){
+      this.$emit('backToChats')
     }
   },
   watch: {
@@ -260,18 +263,23 @@ export default {
 
 
 <template>
-    <div id="chat-area" class="" v-if="chatObj">
+    <div id="chat-area" class="is-flex is-flex-direction-column" v-if="chatObj">
 
-      <div v-if="chatObj.chat.type == 'PRIVATE'" class="block chat-profile-header is-flex px-3">
+      <div v-if="chatObj.chat.type == 'PRIVATE'" class="chat-profile-header is-flex px-3">
         <div class="is-flex is-justify-content-space-between" style="width: 100%">
+
           <div class="is-flex">
-            <figure class="image is-48x48 is-cursor-pointable">
+            <div class="is-flex">
+              <div class="p-3 mr-2">
+                <i @click="handleBackToChats" class="fa-solid fa-arrow-left is-cursor-pointable"></i>
+              </div>
+              <figure class="image is-48x48 is-cursor-pointable">
+                <img v-if="chatObj.chat.type == 'PRIVATE'" class="is-rounded" :src="chatObj.chat.user.avatar">
+                <img v-else class="is-rounded" :src="chatObj.chat.image">
+              </figure>
 
-              <img v-if="chatObj.chat.type == 'PRIVATE'" class="is-rounded" :src="chatObj.chat.user.avatar">
-              <img v-else class="is-rounded" :src="chatObj.chat.image">
-
-            </figure>
-
+            </div>
+    
             <div class="has-text-left px-4">  
               <h4 class="is-size-6 is-cursor-pointable" v-if="chatObj.chat.type == 'PRIVATE'">
                 {{ chatObj.chat.user.first_name }} {{ chatObj.chat.user.last_name }}
@@ -286,8 +294,8 @@ export default {
               <p class="is-size-7" v-else>last seen at {{ normalizeDate(chatObj.chat.user.last_seen_at) }}</p>
 
             </div>
-
           </div>
+
           <div class="is-flex">
             <div class="py-2 px-3">
               <i class="fas fa-search is-cursor-pointable"></i>
@@ -299,7 +307,7 @@ export default {
         </div>
       </div>
 
-      <div v-else-if="chatObj.chat.type == 'GROUP'" class="block chat-profile-header is-flex px-3">
+      <div v-else-if="chatObj.chat.type == 'GROUP'" class="chat-profile-header is-flex px-3">
         <div class="is-flex is-justify-content-space-between" style="width: 100%">
           <div class="is-flex">
             <figure class="image is-48x48 is-cursor-pointable">
@@ -328,7 +336,7 @@ export default {
         </div>
       </div>
 
-      <div v-else-if="chatObj.chat.type == 'CHANNEL'" class="block chat-profile-header is-flex px-3">
+      <div v-else-if="chatObj.chat.type == 'CHANNEL'" class="chat-profile-header is-flex px-3">
         <div class="is-flex is-justify-content-space-between" style="width: 100%">
           <div class="is-flex">
             <figure class="image is-48x48 is-cursor-pointable">
@@ -354,9 +362,10 @@ export default {
           </div>
         </div>
       </div>
-      <div v-else>ELSE!</div>
+      <div v-else class="chat-profile-header is-flex px-3">ELSE!</div>
 
-      <div class="block is-relative">
+      <div class="chat-container is-flex is-flex-direction-column is-justify-content-space-between">
+        <div class="chat-body is-relative">
           <div v-if="isMessageLoading" class="load-more">
               <i class="fa-solid fa-spinner"></i>
           </div>
@@ -364,39 +373,55 @@ export default {
           <div id="msgLstDiv" class="message-list px-4 is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
             <MessageView v-for="message in messages" :key="message.id" :message="message" :chatObj="chatObj" :created_at="normalizeDate(message.created_at)" />
           </div>
+        </div>
 
+        <div class="message-input-container is-flex is-flex-direction-column">
           <form @submit.prevent="handleSendMessage">
-              <div class="field has-addons my-3 px-1">
-                  <div class="control">
-                      <button class="button is-outlined is-success is-medium">
-                          <i class="far fa-smile is-size-5"></i>
-                      </button>
-                  </div>
-                  <div class="control" style="width: 100%">
-                      <input class="input is-success p-5" type="text" placeholder="Message" v-model="inputMessageValue" @input="handleTyping"/>
-                      <audio hidden="true" ref="messageAudio" >
-                        <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
-                      </audio>
-                      <audio hidden="true" ref="messageReceiveAudio" >
-                        <source src="../../assets/audio/whatsapp_message_sent.mp3" type="audio/mpeg">
-                      </audio>
-                  </div>
-                  <div class="control">
-                      <button type="submit" class="button is-success is-medium">
-                          <i class="far fa-paper-plane is-size-5"></i>
-                      </button>
-                  </div>
-              </div>
-          </form>
+            <div class="field has-addons my-3 px-1">
+                <div class="control">
+                    <button class="button is-outlined is-success is-medium">
+                        <i class="far fa-smile is-size-5 is-size-6-mobile"></i>
+                    </button>
+                </div>
+                <div class="control" style="width: 100%">
+                    <input class="input is-success p-5" type="text" placeholder="Message" v-model="inputMessageValue" @input="handleTyping"/>
+                    <audio hidden="true" ref="messageAudio" >
+                      <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio hidden="true" ref="messageReceiveAudio" >
+                      <source src="../../assets/audio/whatsapp_message_sent.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-success is-medium">
+                        <i class="far fa-paper-plane is-size-5 is-size-6-mobile"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
 
+        </div>
+        
       </div>
     </div>
 </template>
 
 <style>
-#chat-area .message-list{
-    max-height: 80vh;
-    overflow-y: auto;
+#chat-area{
+  height: 100%;
+}
+
+.chat-container{
+  height: calc(100% - 48px);
+}
+.chat-body{
+  flex: 1;
+  height: calc(100% - 74px);
+}
+
+#msgLstDiv{
+  height: 100%;
+  overflow-y: auto;
 }
 
 @keyframes typingAnimation {
