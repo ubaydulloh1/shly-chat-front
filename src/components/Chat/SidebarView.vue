@@ -9,6 +9,7 @@ export default {
     return {
       isArchivedOpen: false,
       selectedChatId: 0,
+      searchInput: '',
       chats: [],
     }
   },
@@ -20,6 +21,9 @@ export default {
     toggleArchived(){
       this.isArchivedOpen = !this.isArchivedOpen;
       this.fetchChats();
+    },
+    handleChatSearch(){
+      this.fetchChats()
     },
     chatSelected(chatId){
       this.selectedChatId = chatId
@@ -33,6 +37,7 @@ export default {
           limit: 10,
           offset: 0,
           is_archived: this.isArchivedOpen,
+          search: this.searchInput,
         }
       }
     )
@@ -47,7 +52,7 @@ export default {
     .catch(error => {
       console.log("ERROR: ", error)
     })
-    }
+    },
   },
   mounted(){
     this.fetchChats();
@@ -61,7 +66,7 @@ export default {
     <h2 class="is-size-4 is-size-6-mobile px-2 pb-2 has-text-left">Chats</h2>
     <div class="field px-1">
       <p class="control has-icons-left is-size-6-mobile">
-        <input class="input is-success is-size-6-mobile" type="text" placeholder="Search"/>
+        <input class="input is-success is-size-6-mobile" type="text" placeholder="Search" v-model="searchInput" @input="handleChatSearch"/>
         <span class="icon is-small is-left">
           <i class="fa-solid fa-magnifying-glass"></i>
         </span>
