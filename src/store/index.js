@@ -3,7 +3,8 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     access: '',
-    refresh: ''
+    refresh: '',
+    selectedChatId: 0,
   },
   getters: {
   },
@@ -18,6 +19,11 @@ export default createStore({
         state.refresh = localStorage.getItem('refresh')
       } else {
         state.refresh = ''
+      }
+      if (localStorage.getItem('selectedChatId')){
+        state.selectedChatId = localStorage.getItem('selectedChatId')
+      } else {
+        state.selectedChatId = 0
       }
     },
     setAccess(state, access){
@@ -35,7 +41,15 @@ export default createStore({
     removeRefresh(state){
       localStorage.removeItem("refresh")
       state.refresh = ""
-    }
+    },
+    setSelectedChatId(state, chatId){
+      localStorage.setItem("selectedChatId", chatId)
+      state.selectedChatId = chatId
+    },
+    removeSelectedChatId(state){
+      localStorage.removeItem("selectedChatId")
+      state.selectedChatId = 0
+    },
   },
   actions: {
   },

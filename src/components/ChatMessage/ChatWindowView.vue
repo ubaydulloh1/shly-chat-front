@@ -33,9 +33,6 @@ export default {
   methods: {
     handleSendMessage(){
       if (this.inputMessageValue.trim() === '') return;
-      this.$refs.messageAudio.play()
-      this.$refs.msgLstDiv.scrollTop = this.$refs.msgLstDiv.scrollHeight
-
       if (this.chatObj.chat.type === "PRIVATE"){
         this.handlePrivateChatMessage()
       } else if (this.chatObj.chat.type === "GROUP") {
@@ -46,6 +43,7 @@ export default {
         console.log()
       } else return
       
+      this.$refs.messageInput.focus()
       this.inputMessageValue = ''
     },
     handlePrivateChatMessage(){
@@ -105,8 +103,11 @@ export default {
         } else if (event_type == "private_chat_send_message") {
           const message = event_data.message
           this.messages.unshift(message)
+          this.scrollToLastMessage()
           
-          if (event_data.message.sender.id !== this.myId){
+          if (event_data.message.sender.id === this.myId){
+            this.$refs.messageAudio.play()
+          } else {
             this.$refs.messageReceiveAudio.play()
           }
         } else if (event_type == "private_chat_user_typing_status"){
@@ -227,7 +228,10 @@ export default {
     },
     handleBackToChats(){
       this.$emit('backToChats')
-    }
+    },
+    scrollToLastMessage(){
+      this.$refs.msgLstDiv.scrollTop = this.$refs.msgLstDiv.scrollHeight
+    },
   },
   watch: {
     chatId(newId, oldId){
@@ -384,7 +388,7 @@ export default {
                     </button>
                 </div>
                 <div class="control" style="width: 100%">
-                    <input class="input is-success p-5" type="text" placeholder="Message" v-model="inputMessageValue" @input="handleTyping"/>
+                    <input ref="messageInput" class="input is-success p-5" type="text" placeholder="Message" v-model="inputMessageValue" @input="handleTyping"/>
                     <audio hidden="true" ref="messageAudio" >
                       <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
                     </audio>

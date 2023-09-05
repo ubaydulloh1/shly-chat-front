@@ -20,19 +20,27 @@ export default {
     chatSelected(chatId){
       this.selectedChatId = chatId
       this.isChatSelected = true
+      this.$store.commit("setSelectedChatId", chatId)
     },
     backToChats(){
       this.isChatSelected = false
       this.selectedChatId = null
-      console.log("IS CHAT SELECTED: ", this.isChatSelected)
+      this.$store.commit("removeSelectedChatId")
     },
     updateIsMobile(){
       this.isMobile = window.innerWidth <= 768
     },
   },
   created(){
+    const selectedChatId = this.$store.state.selectedChatId
     this.isMobile = window.innerWidth <= 768
 
+    console.log("SELECTED CHAT ID: ", selectedChatId)
+
+    if (selectedChatId){
+      this.isChatSelected = true
+      this.selectedChatId = selectedChatId
+    }
     window.addEventListener("resize", this.updateIsMobile)
   },
   beforeMount(){
