@@ -1,11 +1,13 @@
 <script>
 import axios from 'axios'
 import ProfileHeaderModalView from '@/components/Modals/ProfileHeaderModalView.vue'
+import ProfileView from '@/components/User/ProfileView.vue'
 
 export default {
   name: "App",
   components: {
     ProfileHeaderModalView,
+    ProfileView,
   },
   data(){
     return {
@@ -16,7 +18,9 @@ export default {
         "id": null,
         "username": null,
         "avatar": "https://bulma.io/images/placeholders/128x128.png"
-      }
+      },
+      isUserProfileOpen: false,
+      openProfileUserId: null,
     }
   },
   methods: {
@@ -51,6 +55,14 @@ export default {
       })
     }
     },
+    showUserProfile(userId){
+      this.isUserProfileOpen = true,
+      this.openProfileUserId = userId
+    },
+    closeUserProfile(){
+      this.isUserProfileOpen = false,
+      this.openProfileUserId = null
+    }
   },
   beforeCreate(){
     this.$store.commit("initializeStore")
@@ -110,9 +122,9 @@ export default {
     </div>
   </nav>
 
-  <router-view class="router-view" :myId="userProfile.id" @loggedIn="handleLoggedIn"/>
+  <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile"/>
+  <router-view class="router-view" :myId="userProfile.id" @loggedIn="handleLoggedIn" @openProfile="showUserProfile"/>
 
-  <!-- <div>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Saepe exercitationem quam quidem voluptas odio atque tenetur sapiente voluptatibus perferendis qui quas, dolore cum iste? Soluta quisquam quasi iste facilis ipsum!</div> -->
 </template>
 
 

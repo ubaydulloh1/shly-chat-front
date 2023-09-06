@@ -232,6 +232,9 @@ export default {
     scrollToLastMessage(){
       this.$refs.msgLstDiv.scrollTop = this.$refs.msgLstDiv.scrollHeight
     },
+    openUserProfile(){
+      this.$emit("openProfile", this.chatObj.chat.user.id)
+    }
   },
   watch: {
     chatId(newId, oldId){
@@ -277,7 +280,7 @@ export default {
               <div class="p-3 mr-2">
                 <i @click="handleBackToChats" class="fa-solid fa-arrow-left is-cursor-pointable"></i>
               </div>
-              <figure class="image is-48x48 is-cursor-pointable">
+              <figure class="image is-48x48 is-cursor-pointable" @click="openUserProfile">
                 <img v-if="chatObj.chat.type == 'PRIVATE'" class="is-rounded" :src="chatObj.chat.user.avatar">
                 <img v-else class="is-rounded" :src="chatObj.chat.image">
               </figure>
@@ -285,7 +288,7 @@ export default {
             </div>
     
             <div class="has-text-left px-4">  
-              <h4 class="is-size-6 is-cursor-pointable" v-if="chatObj.chat.type == 'PRIVATE'">
+              <h4 class="is-size-6 is-cursor-pointable" v-if="chatObj.chat.type == 'PRIVATE'" @click="openUserProfile">
                 {{ chatObj.chat.user.first_name }} {{ chatObj.chat.user.last_name }}
               </h4>
 

@@ -62,7 +62,7 @@ export default {
     </div>
     
     <div class="chat-window" v-if="isChatSelected">
-      <ChatWindowView :chatId="selectedChatId" :myId="myId" @backToChats="backToChats"/>
+      <ChatWindowView :chatId="selectedChatId" :myId="myId" @backToChats="backToChats" @openProfile="(userId)=>{this.$emit('openProfile', userId)}"/>
     </div>
 
     <div class="chat-window" v-else-if="!isChatSelected && !isMobile">
