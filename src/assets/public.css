@@ -34,3 +34,23 @@ body{
 .is-full-width{
     width: 100%;
 }
+
+@keyframes loaderRotate {
+0% {
+    transform: rotate(0deg);
+}
+100% {
+    transform: rotate(360deg);
+}
+}
+
+#typingAnimation{
+animation: typingAnimation 1.5s infinite ease;
+}
+.load-more{
+width: 100%;
+position: absolute;
+}
+.load-more i{
+animation: loaderRotate 1.5s infinite ease-out;
+}

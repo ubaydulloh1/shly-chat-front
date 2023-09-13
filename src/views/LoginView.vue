@@ -17,6 +17,10 @@ export default {
     },
     methods: {
         handleLoginSubmit(){
+            if (!this.user.username || !this.user.password){
+                this.error = 'username and password are required!'
+                return
+            }
             const formData = {
                 username: this.user.username,
                 password: this.user.password
@@ -42,10 +46,13 @@ export default {
                 axios.defaults.headers.common["Authorization"] = "Bearer " + access
                 this.$emit("loggedIn")
                 this.$router.push("/")
-
             })
             .catch(error => {
-                console.log(error)
+                if (error.code == 'ERR_NETWORK'){
+                    this.error = 'Internal server error occured!'
+                } else {
+                    this.error = error.response.data.detail
+                }
             })
         }
     }
@@ -62,7 +69,7 @@ export default {
 
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                        <input class="input is-success" type="text" placeholder="Enter your username" autocomplete="off" v-model="user.username">
+                        <input class="input is-success" type="text" placeholder="Enter your username" autocomplete="off" v-model="user.username" ref="usernameInput" required>
                         <span class="icon is-small is-left">
                         <i class="fas fa-at"></i>
                         </span>
@@ -73,7 +80,7 @@ export default {
                 </div>
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                        <input class="input is-success" v-if="!showPassword" type="password" placeholder="Enter your password" v-model="user.password">
+                        <input class="input is-success" v-if="!showPassword" type="password" placeholder="Enter your password" v-model="user.password" ref="passwordInput" required>
                         <input class="input is-success" v-else type="text" placeholder="Enter your password" v-model="user.password">
 
                         <span class="icon is-small is-left">
@@ -87,7 +94,9 @@ export default {
                     <p class="help has-text-left"><router-link :to="{name:'ResetPassword' }">Forgot?</router-link></p>
                 </div>
                 <div class="block">
+                    <p class="help is-danger has-text-left">{{ error }}</p>
                 </div>
+
                 <div class="field">
                     <p class="control">
                         <button class="button is-success" type="submit">
@@ -95,8 +104,6 @@ export default {
                         </button>
                     </p>
                 </div>
-
-                <p v-if="error" class="help is-danger">{{ error }}</p>
                 <div class="block">
                     <p class="is-size-6">
                         Don't have an account? <router-link :to="{name:'Register' }"> Sign up.</router-link>

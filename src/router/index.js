@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ResetPasswordView from '@/views/ResetPasswordView.vue'
+import UsersView from '@/views/UsersView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const routes = [
   {
@@ -32,6 +34,15 @@ const routes = [
     path: "/reset-password/",
     name: "ResetPassword",
     component: ResetPasswordView
+  },
+  {
+    path: "/users",
+    name: "Users",
+    component: UsersView
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: NotFoundView
   }
 ]
 

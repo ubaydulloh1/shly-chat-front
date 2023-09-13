@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios'
 import MessageView from '@/components/ChatMessage/MessageView.vue'
+import { normalizeDate } from '@/utils'
 
 
 export default {
@@ -159,21 +160,7 @@ export default {
         console.log(error)
       })
     },
-    normalizeDate(date_str){
-      var date = new Date(date_str)
-      var options = {
-          // weekday: 'long',
-          // year: 'numeric',
-          // month: 'short',
-          // day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          // second: 'numeric',
-          hour12: false // Use 12-hour format
-      }
-      var formattedString = date.toLocaleString(undefined, options)
-      return formattedString
-    },
+    normalizeDate,
     handleTyping(){
       this.startTyping()
 
@@ -447,25 +434,6 @@ export default {
   }
 }
 
-@keyframes loaderRotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-#typingAnimation{
-  animation: typingAnimation 1.5s infinite ease;
-}
-.load-more{
-  width: 100%;
-  position: absolute;
-}
-.load-more i{
-  animation: loaderRotate 1.5s infinite ease;
-}
 form {
   position: sticky;
   bottom: 0;

@@ -1,5 +1,7 @@
 
 <script>
+import { normalizeDate } from '@/utils';
+
 export default {
   name: 'ChatListBlockView',
   data(){
@@ -10,21 +12,7 @@ export default {
     chatSelected(){
       this.$emit("chatSelected")
     },
-    normalizeDate(date_str){
-      var date = new Date(date_str)
-      var options = {
-          // weekday: 'long',
-          // year: 'numeric',
-          // month: 'short',
-          // day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          // second: 'numeric',
-          hour12: false // Use 12-hour format
-      }
-      var formattedString = date.toLocaleString(undefined, options)
-      return formattedString
-    },
+    normalizeDate,
   },
 }
 </script>

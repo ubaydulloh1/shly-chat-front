@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-  <div class="home is-flex-desktop is-flex-tablet">
+  <div class="home is-flex-desktop is-flex-tablet" ref="homeRef">
     <div v-if="!isChatSelected | !isMobile" class="chat-sidebar">
       <SidebarView @selectedChat="chatSelected"/>
     </div>

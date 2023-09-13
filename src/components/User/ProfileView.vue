@@ -1,22 +1,77 @@
 <script>
+import axios from 'axios'
+import { normalizeDate } from '@/utils'
+
 export default {
     name: "ProfileView",
     data(){
-        return {}
+        return {
+            user: Object,
+            userError: '',
+            error: ''
+        }
     },
-    props: [],
+    props: ["userId"],
     methods: {
+        startPrivateChat(userId){
+            console.log("SEND MESSAGE WORKED! ", userId)
+            const formData = {
+                type: "PRIVATE",
+                user: userId
+            }
+            axios.post(
+                "chat/chatCreate/",
+                formData
+            )
+            .then(response => {
+                if (response.status == 201){
+                    return response.data
+                }
+            })
+            .then(data => {
+                this.$emit("chatSelected", data.id)
+            })
+            .catch(error => {
+                console.log(error)
+                if (error.code == 'ERR_NETWORK'){
+                    this.error = 'Internal server error occured!'
+                } else if (error.code == 'ERR_BAD_REQUEST') {
+                    const data = error.response.data
+                    this.userError = data.user ? data.user[0]: ''
+                } else {
+                    console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+                }
+            })
+        },
         close(){
             this.$emit("close")
-        }
-    }
+        },
+        fetchUserProfile(userId){
+            axios.get("accounts/profile/" + userId + "/")
+            .then(response => {
+                if (response.status == 200){
+                    return response.data
+                }
+            })
+            .then(data => {
+                this.user = data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        normalizeDate
+    },
+    mounted(){
+        this.fetchUserProfile(this.userId)
+    },
 }
 </script>
 
 <template>
     <div class="modal is-active">
         <div class="modal-background" @click="close"></div>
-        <div class="modal-content">
+        <div class="modal-content p-2">
             <div class="card has-background-white p-3">
                 
                 <div class="is-flex is-justify-content-space-between px-3 pb-5">
@@ -36,12 +91,12 @@ export default {
                 <div class="is-flex mb-4">
                     <div class="mr-4">
                         <figure class="image is-64x64">
-                            <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
+                            <img class="is-rounded" :src="user.avatar">
                         </figure>
                     </div>
                     <div class="is-flex is-flex-direction-column is-justify-content-space-between p-2 has-text-left">
-                        <h2>Nodirbek Biloliddinov</h2>
-                        <p class="is-size-7">last seen at 17:43</p>
+                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                        <p class="is-size-7">last seen at {{ normalizeDate(user.last_seen_at) }}</p>
                     </div>
                 </div>
 
@@ -53,16 +108,16 @@ export default {
                             </span>
                         </div>
                         <ul class="has-text-left">
-                            <li class="mb-4">
-                                <p>+99893 0088802</p>
+                            <!-- <li class="mb-4">
+                                <p>{{ user.phone }}</p>
                                 <p class="is-size-7">mobile</p>
-                            </li>
+                            </li> -->
                             <li class="mb-4">
-                                <p>@root</p>
+                                <p>@{{ user.username }}</p>
                                 <p class="is-size-7">username</p>
                             </li>
                             <li class="mb-4">
-                                <p>ubaydulloh1000@gmail.com</p>
+                                <p>{{ user.email }}</p>
                                 <p class="is-size-7">email</p>
                             </li>
                         </ul>
@@ -70,7 +125,9 @@ export default {
                 </div>
 
                 <div class="is-flex is-justify-content-center">
-                    <button class="button is-success">Send Message</button>
+                    <button class="button is-success" @click="startPrivateChat(user.id)">
+                        Start private chat
+                    </button>
                 </div>
             </div>
         </div>
@@ -79,7 +136,7 @@ export default {
 
 <style>
 .modal-background {
-    background: rgba(0, 255, 0, 0.1);
+    background: rgba(0, 0, 0, 0.1) !important;
 }
 /* span.is-rounded{
     width: 30px;

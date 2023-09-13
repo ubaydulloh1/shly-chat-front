@@ -52,17 +52,28 @@ export default {
       })
       .catch(error => {
         console.log(error)
+        this.$router.push("/login")
       })
     }
     },
     showUserProfile(userId){
-      this.isUserProfileOpen = true,
       this.openProfileUserId = userId
+      this.isUserProfileOpen = true
     },
     closeUserProfile(){
       this.isUserProfileOpen = false,
       this.openProfileUserId = null
-    }
+    },
+    chatSelected(chatId){
+      const routerViewComponent = this.$refs.routerViewRef; // Home component
+      console.log("DDDDD: ", routerViewComponent)
+      console.log("DDDDD: ", routerViewComponent.$data)
+
+      if (routerViewComponent && typeof routerViewComponent.chatSelected === 'function') {
+        this.$refs.push("/")
+        routerViewComponent.chatSelected(chatId);
+      }
+    },
   },
   beforeCreate(){
     this.$store.commit("initializeStore")
@@ -92,9 +103,12 @@ export default {
   <nav class="navbar" role="navigation" aria-label="main navigation">
 
     <div id="navbarBasicExample" class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between py-0">
-      <div class="navbar-start">
+      <div class="navbar-start is-flex">
         <a class="navbar-item">
           <router-link to="/">Home</router-link>
+        </a>
+        <a class="navbar-item">
+          <router-link to="/users">Explore</router-link>
         </a>
       </div>
       
@@ -122,8 +136,8 @@ export default {
     </div>
   </nav>
 
-  <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile"/>
-  <router-view class="router-view" :myId="userProfile.id" @loggedIn="handleLoggedIn" @openProfile="showUserProfile"/>
+  <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile" :user-id="openProfileUserId" @chatSelected="chatSelected"/>
+  <router-view class="router-view" ref="routerViewRef" :myId="userProfile.id" @loggedIn="handleLoggedIn" @openProfile="showUserProfile"/>
 
 </template>
 

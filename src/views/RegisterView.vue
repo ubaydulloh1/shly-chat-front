@@ -15,14 +15,19 @@ export default {
                 password: "",
                 passwordConfirm: "",
             },
-            isUsernameCheckLoading: true,
+            isUsernameCheckLoading: false,
             usernameAvailable: false,
             error: '',
+            usernameError: '',
+            passwordError: '',
         }
     },
     methods: {
         handleSubmit(){
-            console.log("USER: ", this.user)
+            if (this.user.password !== this.user.passwordConfirm){
+                this.passwordError = "Password didn't match!"
+                return
+            }
             const formData = {
                         username: this.user.username,
                         email: this.user.email,
@@ -40,11 +45,25 @@ export default {
                     return response.data
                 }
             })
-            .then(data => {
-                console.log(data)
+            .then(() => {
+                this.$router.push("/login")
             })
             .catch(error => {
                 console.log(error)
+
+                if (error.response) {
+                    if (error.response.status === 500) {
+                        this.error = 'Internal server error occurred!';
+                    } else if (error.response.status === 400) {
+                        const data = error.response.data
+                        this.usernameError = data.username ? data.username[0] : ''
+                        this.passwordError = data.password ? data.password[0] : ''
+                    }
+                } else if (error.request) {
+                    this.error = 'Network error occurred!';
+                } else {
+                    this.error = 'An error occurred while processing your request.';
+                }
             })
 
         },
@@ -57,26 +76,35 @@ export default {
             }
             
             this.isUsernameCheckLoading = true
-            axios.get(
-                "/accounts/check-username-available",
-                {
-                    params: {
-                        username: this.user.username
-                    }
-                }
+            setTimeout(
+                ()=>{
+                    axios.get(
+                        "/accounts/check-username-available",
+                        {
+                            params: {
+                                username: this.user.username
+                            }
+                        }
+                    )
+                    .then(response => {
+                        if (response.status == 200){
+                            return response.data
+                        }
+                    })
+                    .then(data => {
+                        this.usernameAvailable = data.is_available
+                        if (this.usernameAvailable){
+                            this.usernameError = ''
+                        } else {
+                            this.usernameError = 'This username is not available.'
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                    this.isUsernameCheckLoading = false
+                }, 400
             )
-            .then(response => {
-                if (response.status == 200){
-                    return response.data
-                }
-            })
-            .then(data => {
-                this.usernameAvailable = data.is_available
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            this.isUsernameCheckLoading = false
         }
     },
     beforeMount(){
@@ -104,12 +132,14 @@ export default {
                             <i class="fas fa-at"></i>
                         </span>
                         <span class="icon is-small is-right is-loading">
-                            <i class="fa-solid fa-spinner" v-if="isUsernameCheckLoading"></i>
+                            <div v-if="isUsernameCheckLoading" class="load-more">
+                                <i class="fa-solid fa-spinner"></i>
+                            </div>
                             <i class="fas fa-check has-text-success" v-else-if="usernameAvailable"></i>
                             <i class="fa-solid fa-xmark has-text-danger" v-else></i>
                         </span>
                     </p>
-                    <p class="help has-text-danger has-text-left" v-if="!usernameAvailable && user.username">This username is unavailable.</p>
+                    <p class="help has-text-danger has-text-left" v-if="usernameError">{{ usernameError }}</p>
 
                 </div>
 
@@ -156,6 +186,7 @@ export default {
                             <i v-else class="fas fa-eye-slash"></i>
                         </span>
                     </p>
+                    <p class="help has-text-left has-text-danger" v-if="passwordError">{{ passwordError }}</p>
                 </div>
 
                 <div class="field">
@@ -171,10 +202,9 @@ export default {
                             <i v-else class="fas fa-eye-slash"></i>
                         </span>
                     </p>
+                    <p class="help has-text-left has-text-danger" v-if="passwordError">{{ passwordError }}</p>
                 </div>
 
-                <div class="block">
-                </div>
                 <div class="field">
                     <p class="control">
                         <button class="button is-success" type="submit">
