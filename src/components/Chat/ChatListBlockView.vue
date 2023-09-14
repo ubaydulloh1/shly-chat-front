@@ -7,7 +7,7 @@ export default {
   data(){
     return {}
   },
-  props: ["chatObj", "isSelected",],
+  props: ["chatObj", "isSelected", "myId"],
   methods: {
     chatSelected(){
       this.$emit("chatSelected")
@@ -42,11 +42,17 @@ export default {
                   </div>
                   <div class="is-flex is-flex-direction-column is-justify-content-space-between">
                     <p class="is-size-7">{{ normalizeDate(chatObj.last_message_created_at) }}</p>
-
-                    <p v-if="chatObj.unseen_messages_count">
-                      <span class="is-size-7 has-background-primary has-text-white unread-message-count py-1 px-2">{{ chatObj.unseen_messages_count }}</span>
-                      <!-- <span class="is-size-7 has-background-primary unread-message-count py-1 px-2">1273</span> -->
-                    </p>
+                    
+                    <div class="is-flex is-justify-content-space-between">
+                      <p class="mr-1" v-if="chatObj.last_message_sender_id === myId">
+                        <i v-if="chatObj.last_message_is_seen" class="fa-solid fa-check-double has-text-success"></i>
+                        <i v-else class="fa-solid fa-check has-text-success"></i>
+                      </p>
+                      <p v-if="chatObj.unseen_messages_count">
+                        <span class="is-size-7 has-background-primary has-text-white unread-message-count py-1 px-2">{{ chatObj.unseen_messages_count }}</span>
+                        <!-- <span class="is-size-7 has-background-primary unread-message-count py-1 px-2">1273</span> -->
+                      </p>
+                    </div>
                   
                   </div>
               </div>

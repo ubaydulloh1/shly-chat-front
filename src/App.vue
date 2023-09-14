@@ -65,14 +65,9 @@ export default {
       this.openProfileUserId = null
     },
     chatSelected(chatId){
-      const routerViewComponent = this.$refs.routerViewRef; // Home component
-      console.log("DDDDD: ", routerViewComponent)
-      console.log("DDDDD: ", routerViewComponent.$data)
-
-      if (routerViewComponent && typeof routerViewComponent.chatSelected === 'function') {
-        this.$refs.push("/")
-        routerViewComponent.chatSelected(chatId);
-      }
+      this.$store.commit("setSelectedChatId", chatId)
+      this.closeUserProfile()
+      this.$router.push("/")
     },
   },
   beforeCreate(){

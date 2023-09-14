@@ -197,10 +197,13 @@ export default {
     },
     loadMore(msgLst){
       if (-msgLst.scrollTop + msgLst.clientHeight + 1 >= msgLst.scrollHeight) {
-            this.messageOffset = this.messageOffset + this.messageLimit
-            
-            if (this.isFetchingMessages || this.messageOffset >= this.allMessageCount) {
+            if (this.isFetchingMessages){
               return
+            } else {
+              this.messageOffset = this.messageOffset + this.messageLimit
+              if (this.messageOffset >= this.allMessageCount) {
+              return
+            }
             }
             this.isFetchingMessages = true
 

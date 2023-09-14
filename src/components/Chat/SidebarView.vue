@@ -13,7 +13,7 @@ export default {
       chats: [],
     }
   },
-  props: {},
+  props: ["myId"],
   components: {
     ChatListBlockView,
   },
@@ -94,7 +94,7 @@ export default {
       </div>
 
       <div id="chat-list" class=""> <!-- has-background-white-ter -->
-          <ChatListBlockView v-for="chat in chats" :key="chat.chat.id" :chatObj="chat" @chatSelected="chatSelected(chat.chat.id)" :isSelected="selectedChatId == chat.chat.id"/>
+          <ChatListBlockView v-for="chat in chats" :key="chat.chat.id" :chatObj="chat" @chatSelected="chatSelected(chat.chat.id)" :isSelected="selectedChatId == chat.chat.id" :myId="myId"/>
           <div v-if="!chats.length" class="p-5">No chats</div>
       </div>
 
