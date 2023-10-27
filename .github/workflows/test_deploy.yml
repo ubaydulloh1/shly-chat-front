@@ -1,0 +1,30 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  execute_tests:
+    name: Test
+    runs-on: self-hosted
+    steps:
+      - name: Echo
+        run: echo "Hello world!"
+  deploy:
+    needs: execute_tests
+    name: Deploy to production
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: git pull
+        run: git pull origin master
+        working-directory: /var/www/web/shly.uz/frontend
+      - name: npm build
+        run: npm run build
+        working-directory: /var/www/web/shly.uz/frontend
