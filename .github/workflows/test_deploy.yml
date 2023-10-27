@@ -25,8 +25,6 @@ jobs:
       - name: git pull
         run: git pull origin master
         working-directory: /var/www/web/shly.uz/frontend
-      - name: npm build
-        run: npm install && npm run build
-        working-directory: /var/www/web/shly.uz/frontend
-      - name: reload nginx
+      - name: deploy
         run: chmod +x deploy.sh && ./deploy.sh
+        working-directory: /var/www/web/shly.uz/frontend
