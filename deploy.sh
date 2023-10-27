@@ -7,7 +7,7 @@ nvm use 18
 echo "node version is: $(node --version)"
 
 # npm install && build
-npm install && npm run build
+npm install && npm run build 2>&1 > /dev/null
 
 # reload nginx
 sudo ./d.sh
