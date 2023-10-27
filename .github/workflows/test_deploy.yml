@@ -28,3 +28,5 @@ jobs:
       - name: npm build
         run: npm install && npm run build
         working-directory: /var/www/web/shly.uz/frontend
+      - name: reload nginx
+        run: +x deploy.sh && ./deploy.sh
