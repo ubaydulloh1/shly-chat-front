@@ -4,32 +4,39 @@ import { normalizeDate } from '@/utils';
 
 export default {
     name: "UsersView",
-    data(){
+    data() {
         return {
             users: []
         }
     },
-    methods:{
-        fetchUsers(){
+    methods: {
+        fetchUsers() {
             axios.get("/accounts/list/")
-            .then(response => {
-                if (response.status == 200){
-                return response.data
-                }
-            })
-            .then(data => {
-                this.users = data.results
-            })
-            .catch(error => {
-                console.log(error)
-            })
+                .then(response => {
+                    if (response.status == 200) {
+                        return response.data
+                    }
+                })
+                .then(data => {
+                    this.users = data.results
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         },
-        openUserProfile(userId){
+        openUserProfile(userId) {
             this.$emit("openProfile", userId)
         },
         normalizeDate
     },
-    mounted(){
+    created() {
+        const access = this.$store.state.access
+
+        if (!access) {
+            this.$router.push("/login")
+        }
+    },
+    mounted() {
         this.fetchUsers()
     },
 }
@@ -43,7 +50,8 @@ export default {
                 <div class="card is-inline-block is-cursor-pointable" @click="openUserProfile(user.id)">
                     <div class="card-image">
                         <figure class="image is-4by3">
-                        <img :src="user.avatar" alt="Placeholder image">
+                            <img v-if="user.avatar" :src="user.avatar" alt="Placeholder image">
+                            <img v-else src="https://ssl.gstatic.com/images/branding/product/1x/avatar_square_blue_512dp.png" alt="Placeholder image">
                         </figure>
                     </div>
                     <div class="card-content">
@@ -65,6 +73,6 @@ export default {
             </div>
 
         </div>
-        
+
     </div>
 </template>
