@@ -4,7 +4,7 @@ import { normalizeDate } from '@/utils'
 
 export default {
     name: "ProfileView",
-    data(){
+    data() {
         return {
             user: Object,
             userError: '',
@@ -13,7 +13,7 @@ export default {
     },
     props: ["userId"],
     methods: {
-        startPrivateChat(userId){
+        startPrivateChat(userId) {
             console.log("SEND MESSAGE WORKED! ", userId)
             const formData = {
                 type: "PRIVATE",
@@ -23,46 +23,46 @@ export default {
                 "chat/chatCreate/",
                 formData
             )
-            .then(response => {
-                if (response.status == 201){
-                    return response.data
-                }
-            })
-            .then(data => {
-                this.$emit("chatSelected", data.id)
-            })
-            .catch(error => {
-                console.log(error)
-                if (error.code == 'ERR_NETWORK'){
-                    this.error = 'Internal server error occured!'
-                } else if (error.code == 'ERR_BAD_REQUEST') {
-                    const data = error.response.data
-                    this.userError = data.user ? data.user[0]: ''
-                } else {
-                    console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-                }
-            })
+                .then(response => {
+                    if (response.status == 201) {
+                        return response.data
+                    }
+                })
+                .then(data => {
+                    this.$emit("chatSelected", data.id)
+                })
+                .catch(error => {
+                    console.log(error)
+                    if (error.code == 'ERR_NETWORK') {
+                        this.error = 'Internal server error occured!'
+                    } else if (error.code == 'ERR_BAD_REQUEST') {
+                        const data = error.response.data
+                        this.userError = data.user ? data.user[0] : ''
+                    } else {
+                        console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+                    }
+                })
         },
-        close(){
+        close() {
             this.$emit("close")
         },
-        fetchUserProfile(userId){
+        fetchUserProfile(userId) {
             axios.get("accounts/profile/" + userId + "/")
-            .then(response => {
-                if (response.status == 200){
-                    return response.data
-                }
-            })
-            .then(data => {
-                this.user = data
-            })
-            .catch(err => {
-                console.log(err)
-            })
+                .then(response => {
+                    if (response.status == 200) {
+                        return response.data
+                    }
+                })
+                .then(data => {
+                    this.user = data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
         },
         normalizeDate
     },
-    mounted(){
+    mounted() {
         this.fetchUserProfile(this.userId)
     },
 }
@@ -73,7 +73,7 @@ export default {
         <div class="modal-background" @click="close"></div>
         <div class="modal-content p-2">
             <div class="card has-background-white p-3">
-                
+
                 <div class="is-flex is-justify-content-space-between px-3 pb-5">
                     <div class="is-flex">
                         <div class="px-2">
@@ -87,16 +87,19 @@ export default {
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="is-flex mb-4">
                     <div class="mr-4">
                         <figure class="image is-64x64">
-                            <img class="is-rounded" :src="user.avatar">
+                            <img v-if="user.avatar" class="is-rounded" :src="user.avatar">
+                            <img v-else class="is-rounded" src="../../assets/default_avatar.png">
                         </figure>
                     </div>
                     <div class="is-flex is-flex-direction-column is-justify-content-space-between p-2 has-text-left">
-                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-                        <p class="is-size-7">last seen at {{ normalizeDate(user.last_seen_at) }}</p>
+                        <h2 v-if="user">{{ user.first_name }} {{ user.last_name }}</h2>
+                        <h2 v-else>Unknown</h2>
+                        <p v-if="user" class="is-size-7">last seen at {{ normalizeDate(user.last_seen_at) }}</p>
+                        <p v-else class="is-size-7">last seen at recently</p>
                     </div>
                 </div>
 
@@ -109,15 +112,17 @@ export default {
                         </div>
                         <ul class="has-text-left">
                             <!-- <li class="mb-4">
-                                <p>{{ user.phone }}</p>
-                                <p class="is-size-7">mobile</p>
-                            </li> -->
+                                    <p>{{ user.phone }}</p>
+                                    <p class="is-size-7">mobile</p>
+                                </li> -->
                             <li class="mb-4">
-                                <p>@{{ user.username }}</p>
+                                <p v-if="user">@{{ user.username }}</p>
+                                <p v-else>@username</p>
                                 <p class="is-size-7">username</p>
                             </li>
                             <li class="mb-4">
-                                <p>{{ user.email }}</p>
+                                <p v-if="user">{{ user.email }}</p>
+                                <p v-else>user@email.com</p>
                                 <p class="is-size-7">email</p>
                             </li>
                         </ul>
@@ -131,13 +136,14 @@ export default {
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 </template>
 
 <style>
 .modal-background {
     background: rgba(0, 0, 0, 0.1) !important;
 }
+
 /* span.is-rounded{
     width: 30px;
     height: 30px;

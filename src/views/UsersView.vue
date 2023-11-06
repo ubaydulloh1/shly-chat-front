@@ -51,7 +51,7 @@ export default {
                     <div class="card-image">
                         <figure class="image is-4by3">
                             <img v-if="user.avatar" :src="user.avatar" alt="Placeholder image">
-                            <img v-else src="https://ssl.gstatic.com/images/branding/product/1x/avatar_square_blue_512dp.png" alt="Placeholder image">
+                            <img v-else src="../assets/default_avatar.png" alt="Placeholder image">
                         </figure>
                     </div>
                     <div class="card-content">

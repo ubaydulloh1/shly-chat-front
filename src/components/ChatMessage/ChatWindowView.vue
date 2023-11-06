@@ -272,7 +272,7 @@ export default {
             </div>
             <figure class="image is-48x48 is-cursor-pointable" @click="openUserProfile">
               <img v-if="chatObj.chat.type == 'PRIVATE' && chatObj.chat.user.avatar" class="is-rounded" :src="chatObj.chat.user.avatar">
-              <img v-else class="is-rounded" src="https://ssl.gstatic.com/images/branding/product/1x/avatar_square_blue_512dp.png">
+              <img v-else class="is-rounded" src="../../assets/default_avatar.png">
             </figure>
 
           </div>
