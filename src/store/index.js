@@ -1,55 +1,65 @@
 import { createStore } from 'vuex'
 
+
+
 export default createStore({
   state: {
     access: '',
     refresh: '',
+    user: null,
     selectedChatId: 0,
   },
   getters: {
   },
   mutations: {
-    initializeStore(state){
-      if (localStorage.getItem('access')){
+    initializeStore(state) {
+      if (localStorage.getItem('access')) {
         state.access = localStorage.getItem('access')
       } else {
         state.access = ''
       }
-      if (localStorage.getItem('refresh')){
+      if (localStorage.getItem('refresh')) {
         state.refresh = localStorage.getItem('refresh')
       } else {
         state.refresh = ''
       }
-      if (localStorage.getItem('selectedChatId')){
+      if (localStorage.getItem('selectedChatId')) {
         state.selectedChatId = localStorage.getItem('selectedChatId')
       } else {
         state.selectedChatId = 0
       }
     },
-    setAccess(state, access){
+    setAccess(state, access) {
       localStorage.setItem("access", access)
       state.access = access
     },
-    setRefresh(state, refresh){
+    setRefresh(state, refresh) {
       localStorage.setItem("refresh", refresh)
       state.refresh = refresh
     },
-    removeAccess(state){
+    removeAccess(state) {
       localStorage.removeItem("access")
       state.access = ""
     },
-    removeRefresh(state){
+    removeRefresh(state) {
       localStorage.removeItem("refresh")
       state.refresh = ""
     },
-    setSelectedChatId(state, chatId){
+    setSelectedChatId(state, chatId) {
       localStorage.setItem("selectedChatId", chatId)
       state.selectedChatId = chatId
     },
-    removeSelectedChatId(state){
+    removeSelectedChatId(state) {
       localStorage.removeItem("selectedChatId")
       state.selectedChatId = 0
     },
+    cleanStorage(state) {
+      localStorage.clear();
+      state.access = '';
+      state.refresh = '';
+      state.user = '';
+      state.selectedChatId = 0;
+    }
   },
   actions: {
   },

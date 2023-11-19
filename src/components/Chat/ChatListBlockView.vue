@@ -26,7 +26,7 @@ export default {
                   <figure class="image is-48x48">
 
                     <img v-if="chatObj.chat.user.avatar" class="is-rounded" :src="chatObj.chat.user.avatar">
-                    <img v-else class="is-rounded" src="../../assets/default_avatar.png">
+                    <img v-else class="is-rounded" src="../../assets/images/default_avatar.png">
 
                   </figure>
               </div>
@@ -62,7 +62,7 @@ export default {
               <div class="p-2">
                   <figure class="image is-48x48">
                       <img v-if="chatObj.chat.image" class="is-rounded" :src="chatObj.chat.image">
-                      <img v-else class="is-rounded" src="../../assets/default_avatar.png">
+                      <img v-else class="is-rounded" src="../../assets/images/default_avatar.png">
                   </figure>
               </div>
               <div class="p-2">
@@ -80,7 +80,7 @@ export default {
               <div class="p-2">
                   <figure class="image is-48x48">
                       <img v-if="chatObj.chat.image" class="is-rounded" :src="chatObj.chat.image">
-                      <img v-else class="is-rounded" src="../../assets/default_avatar.png">
+                      <img v-else class="is-rounded" src="../../assets/images/default_avatar.png">
                   </figure>
               </div>
               <div class="p-2">

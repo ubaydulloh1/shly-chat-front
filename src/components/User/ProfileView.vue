@@ -92,7 +92,7 @@ export default {
                     <div class="mr-4">
                         <figure class="image is-64x64">
                             <img v-if="user.avatar" class="is-rounded" :src="user.avatar">
-                            <img v-else class="is-rounded" src="../../assets/default_avatar.png">
+                            <img v-else class="is-rounded" src="../../assets/images/default_avatar.png">
                         </figure>
                     </div>
                     <div class="is-flex is-flex-direction-column is-justify-content-space-between p-2 has-text-left">

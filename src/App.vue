@@ -9,7 +9,7 @@ export default {
     ProfileHeaderModalView,
     ProfileView,
   },
-  data(){
+  data() {
     return {
       isUserLogged: false,
       showNavbarMenu: false,
@@ -17,77 +17,76 @@ export default {
       userProfile: {
         "id": null,
         "username": null,
-        "avatar": "https://bulma.io/images/placeholders/128x128.png"
+        "avatar": process.env.BASE_URL + 'default_avatar.png'
       },
       isUserProfileOpen: false,
       openProfileUserId: null,
     }
   },
   methods: {
-    handleLoggedIn(){
+    handleLoggedIn() {
       this.isUserLogged = true
       this.fetchMe()
     },
-    handleLogout(){
-      this.$store.commit("removeAccess")
-      this.$store.commit("removeRefresh")
+    handleLogout() {
+      this.$store.commit("cleanStorage")
       this.isUserLogged = false
       this.$router.push("/login")
     },
-    toggleProfileHeader(){
+    toggleProfileHeader() {
       this.showProfileHeaderModal = !this.showProfileHeaderModal
     },
-    fetchMe(){
-      if (this.isUserLogged){
-      axios.get("/accounts/me/")
-      .then(response => {
-        if (response.status == 200){
-          return response.data
-        }
-      })
-      .then(data => {
-        this.userProfile.id = data.id
-        this.userProfile.username = data.username
-        this.userProfile.avatar = data.avatar ? data.avatar : this.userProfile.avatar
-      })
-      .catch(error => {
-        console.log(error)
-        this.$router.push("/login")
-      })
-    }
+    fetchMe() {
+      if (this.isUserLogged) {
+        axios.get("/accounts/me/")
+          .then(response => {
+            if (response.status == 200) {
+              return response.data
+            }
+          })
+          .then(data => {
+            this.userProfile.id = data.id
+            this.userProfile.username = data.username
+            this.userProfile.avatar = data.avatar ? data.avatar : this.userProfile.avatar
+          })
+          .catch(error => {
+            console.log(error)
+            this.$router.push("/login")
+          })
+      }
     },
-    showUserProfile(userId){
+    showUserProfile(userId) {
       this.openProfileUserId = userId
       this.isUserProfileOpen = true
     },
-    closeUserProfile(){
+    closeUserProfile() {
       this.isUserProfileOpen = false,
-      this.openProfileUserId = null
+        this.openProfileUserId = null
     },
-    chatSelected(chatId){
+    chatSelected(chatId) {
       this.$store.commit("setSelectedChatId", chatId)
       this.closeUserProfile()
       this.$router.push("/")
     },
   },
-  beforeCreate(){
+  beforeCreate() {
     this.$store.commit("initializeStore")
     const access = this.$store.state.access
 
-    if (access){
+    if (access) {
       axios.defaults.headers.common['Authorization'] = "Bearer " + access
     } else {
       axios.defaults.headers.common['Authorization'] = ""
     }
   },
-  created(){
+  created() {
     const access = this.$store.state.access
 
-    if (access){
+    if (access) {
       this.isUserLogged = true
     }
   },
-  mounted(){
+  mounted() {
     this.fetchMe()
   },
 }
@@ -97,7 +96,8 @@ export default {
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
 
-    <div id="navbarBasicExample" class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between py-0">
+    <div id="navbarBasicExample"
+      class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between py-0">
       <div class="navbar-start is-flex">
         <a class="navbar-item">
           <router-link to="/">Home</router-link>
@@ -106,7 +106,7 @@ export default {
           <router-link to="/users">Explore</router-link>
         </a>
       </div>
-      
+
       <div class="navbar-end is-flex-mobile" v-if="!isUserLogged">
         <div class="navbar-item">
           <router-link to="/login/">Sign in</router-link>
@@ -116,24 +116,22 @@ export default {
       <div class="navbar-end is-flex" v-else>
         <div class="is-flex py-2 px-5">
           <figure class="image is-32x32 is-cursor-pointable" @click="toggleProfileHeader">
+            <!-- <img class="is-rounded" :src="userProfile.avatar"> -->
             <img class="is-rounded" :src="userProfile.avatar">
           </figure>
 
-          <ProfileHeaderModalView 
-          v-if="showProfileHeaderModal" 
-          :showProfileHeaderModal="showProfileHeaderModal" 
-          @closeProfileHeaderModal="toggleProfileHeader"
-          @logoutClick="handleLogout" 
-          />
+          <ProfileHeaderModalView v-if="showProfileHeaderModal" :showProfileHeaderModal="showProfileHeaderModal"
+            @closeProfileHeaderModal="toggleProfileHeader" @logoutClick="handleLogout" />
 
         </div>
       </div>
     </div>
   </nav>
 
-  <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile" :user-id="openProfileUserId" @chatSelected="chatSelected"/>
-  <router-view class="router-view" ref="routerViewRef" :myId="userProfile.id" @loggedIn="handleLoggedIn" @openProfile="showUserProfile"/>
-
+  <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile" :user-id="openProfileUserId"
+    @chatSelected="chatSelected" />
+  <router-view class="router-view" ref="routerViewRef" :myId="userProfile.id" @loggedIn="handleLoggedIn"
+    @openProfile="showUserProfile" />
 </template>
 
 
@@ -147,14 +145,14 @@ export default {
   /* overflow-y: auto; */
 }
 
-.navbar{
-    height: 50px;
-    top: 0;
-    position: sticky !important;
-    width: 100%;
+.navbar {
+  height: 50px;
+  top: 0;
+  position: sticky !important;
+  width: 100%;
 }
 
-.router-view{
+.router-view {
   height: calc(100% - 52px);
 }
 
@@ -170,6 +168,6 @@ nav a.router-link-exact-active {
 @media screen and (max-width: 768px) {
   .navbar-menu {
     box-shadow: none !important;
-  } 
+  }
 }
 </style>

@@ -6,12 +6,14 @@ export default {
     name: "UsersView",
     data() {
         return {
-            users: []
+            users: [],
+            limit: 100,
+            offset: 0
         }
     },
     methods: {
         fetchUsers() {
-            axios.get("/accounts/list/")
+            axios.get("/accounts/list/?limit=" + this.limit + "&offset=" + this.offset)
                 .then(response => {
                     if (response.status == 200) {
                         return response.data
@@ -51,7 +53,7 @@ export default {
                     <div class="card-image">
                         <figure class="image is-4by3">
                             <img v-if="user.avatar" :src="user.avatar" alt="Placeholder image">
-                            <img v-else src="../assets/default_avatar.png" alt="Placeholder image">
+                            <img v-else src="../assets/images/default_avatar.png" alt="Placeholder image">
                         </figure>
                     </div>
                     <div class="card-content">

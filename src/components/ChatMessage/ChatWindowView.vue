@@ -37,10 +37,10 @@ export default {
       if (this.chatObj.chat.type === "PRIVATE") {
         this.handlePrivateChatMessage()
       } else if (this.chatObj.chat.type === "GROUP") {
-        // TODO jandle group message
+        // TODO handle group message
         console.log()
       } else if (this.chatObj.chat.type === "CHANNEL") {
-        // TODO jandle channel message
+        // TODO handle channel message
         console.log()
       } else return
 
@@ -115,6 +115,8 @@ export default {
           if (event_data.user_id !== this.myId) {
             this.isInterlocutorTyping = event_data.is_typing
           }
+        } else if (event_type == "private_chat_edit_message") {
+          console.log("MESSAGE EDITED!")
         }
       } catch {
         console.log("ERROR PARSING WEBSOCKET MESSAGE!")
@@ -224,6 +226,20 @@ export default {
     },
     openUserProfile() {
       this.$emit("openProfile", this.chatObj.chat.user.id)
+    },
+    editMessage(msgId, newMessageContent) {
+      const message = {
+        EVENT_TYPE: "private_chat_edit_message",
+        message_id: msgId,
+        message_text: newMessageContent,
+      }
+
+      if (this.webSocket.readyState == WebSocket.OPEN) {
+        this.webSocket.send(JSON.stringify(message))
+      }
+      var editedMsg = this.messages.find(message => message.id === msgId)
+      editedMsg.is_edited = true,
+      editedMsg.content = newMessageContent
     }
   },
   watch: {
@@ -271,8 +287,9 @@ export default {
               <i @click="handleBackToChats" class="fa-solid fa-arrow-left is-cursor-pointable"></i>
             </div>
             <figure class="image is-48x48 is-cursor-pointable" @click="openUserProfile">
-              <img v-if="chatObj.chat.type == 'PRIVATE' && chatObj.chat.user.avatar" class="is-rounded" :src="chatObj.chat.user.avatar">
-              <img v-else class="is-rounded" src="../../assets/default_avatar.png">
+              <img v-if="chatObj.chat.type == 'PRIVATE' && chatObj.chat.user.avatar" class="is-rounded"
+                :src="chatObj.chat.user.avatar">
+              <img v-else class="is-rounded" src="../../assets/images/default_avatar.png">
             </figure>
 
           </div>
@@ -370,7 +387,7 @@ export default {
 
         <div id="msgLstDiv" class="message-list px-4 is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
           <MessageView v-for="message in messages" :key="message.id" :message="message" :chatObj="chatObj"
-            :created_at="normalizeDate(message.created_at)" />
+            :created_at="normalizeDate(message.created_at)" @editMessage="editMessage" />
         </div>
       </div>
 
@@ -447,4 +464,5 @@ export default {
 form {
   position: sticky;
   bottom: 0;
-}</style>
+}
+</style>
