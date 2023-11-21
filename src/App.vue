@@ -2,10 +2,12 @@
 import axios from 'axios'
 import ProfileHeaderModalView from '@/components/Modals/ProfileHeaderModalView.vue'
 import ProfileView from '@/components/User/ProfileView.vue'
+import AccountModalView from './components/Modals/AccountModalView.vue'
 
 export default {
   name: "App",
   components: {
+    AccountModalView,
     ProfileHeaderModalView,
     ProfileView,
   },
@@ -21,6 +23,7 @@ export default {
       },
       isUserProfileOpen: false,
       openProfileUserId: null,
+      isUserAccountViewOpen: false,
     }
   },
   methods: {
@@ -68,6 +71,9 @@ export default {
       this.closeUserProfile()
       this.$router.push("/")
     },
+    toggleAccountView() {
+      this.isUserAccountViewOpen = !this.isUserAccountViewOpen;
+    }
   },
   beforeCreate() {
     this.$store.commit("initializeStore")
@@ -116,12 +122,11 @@ export default {
       <div class="navbar-end is-flex" v-else>
         <div class="is-flex py-2 px-5">
           <figure class="image is-32x32 is-cursor-pointable" @click="toggleProfileHeader">
-            <!-- <img class="is-rounded" :src="userProfile.avatar"> -->
             <img class="is-rounded" :src="userProfile.avatar">
           </figure>
 
           <ProfileHeaderModalView v-if="showProfileHeaderModal" :showProfileHeaderModal="showProfileHeaderModal"
-            @closeProfileHeaderModal="toggleProfileHeader" @logoutClick="handleLogout" />
+            @closeProfileHeaderModal="toggleProfileHeader" @logoutClick="handleLogout" @openAccountView="toggleAccountView"/>
 
         </div>
       </div>
@@ -130,6 +135,8 @@ export default {
 
   <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile" :user-id="openProfileUserId"
     @chatSelected="chatSelected" />
+  <AccountModalView v-if="isUserAccountViewOpen" @close="toggleAccountView" />
+
   <router-view class="router-view" ref="routerViewRef" :myId="userProfile.id" @loggedIn="handleLoggedIn"
     @openProfile="showUserProfile" />
 </template>

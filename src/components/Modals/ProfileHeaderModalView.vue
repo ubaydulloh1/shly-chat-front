@@ -2,20 +2,23 @@
 export default {
     name: "ProfileHeaderModalView",
     props: [
-    "showProfileHeaderModal"
+        "showProfileHeaderModal"
     ],
-    data(){},
+    data() { },
     methods: {
-        closeModal(){
+        closeModal() {
             this.$emit("closeProfileHeaderModal")
         },
-        logout(){
+        logout() {
             this.$emit("closeProfileHeaderModal")
             this.$emit("logoutClick")
         },
-        changePassword(){
+        changePassword() {
             this.$emit("closeProfileHeaderModal")
             this.$router.push("/reset-password")
+        },
+        openAccountView() {
+            this.$emit("openAccountView")
         }
     }
 }
@@ -29,9 +32,9 @@ export default {
                     <span class="pr-2">
                         <i class="fa-regular fa-user is-size-6"></i>
                     </span>
-                    <li class="">Profile information</li>
+                    <li class="" @click="openAccountView">Profile information</li>
                 </div>
-                
+
                 <div class="is-flex py-2 px-5 is-cursor-pointable">
                     <span class="pr-2">
                         <i class="fa-solid fa-arrows-spin is-size-6"></i>
@@ -51,12 +54,13 @@ export default {
 </template>
 
 <style scoped>
-.profile-header{
+.profile-header {
     position: absolute;
     right: 20px;
     top: 50px;
 }
-.is-cursor-pointable:hover{
+
+.is-cursor-pointable:hover {
     background: rgba(0, 0, 0, 0.02);
 }
 </style>
