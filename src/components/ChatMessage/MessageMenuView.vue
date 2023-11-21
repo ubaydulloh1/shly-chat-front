@@ -50,7 +50,8 @@ export default {
             <div class="has-background-white py-2 px-3">
                 <form @submit.prevent="saveAndEdit">
                     <p class="p-3">
-                        <input class="input is-success" type="text" v-model="messageContent" required>
+                        <textarea class="textarea is-success" type="text" v-model="messageContent" required>
+                        </textarea>
                     </p>
                     <ul>
                         <li type="submit" class="button m-1 is-block is-success" @click="saveAndEdit">save & edit</li>

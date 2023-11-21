@@ -47,7 +47,7 @@ export default {
     <div class="message my-2 has-background-primary-light" @contextmenu.prevent="showMessageMenu(message.id)">
       <p class="p-3 has-text-left">{{ message.content }}</p>
       <div class="is-flex is-justify-content-end">
-        <span v-if="!message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
+        <span v-if="message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
         <span v-if="message.is_seen"><i class="fa-solid fa-check-double has-text-success"></i></span>
         <span v-else><i class="fa-solid fa-check has-text-success"></i></span>
         <p class="px-3 pb-2 is-size-7 has-text-right">{{ created_at }}</p><span class="is-size-7"
@@ -62,7 +62,7 @@ export default {
     <div class="message received-message my-2" @contextmenu.prevent="showMessageMenu(message.id)">
       <p class="p-3 has-text-left">{{ message.content }}</p>
       <div class="is-flex is-justify-content-end">
-        <span v-if="!message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
+        <span v-if="message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
         <p class="px-3 pb-2 is-size-7 has-text-right">{{ created_at }}</p><span class="is-size-7"
           v-if="message.is_edited">edited</span>
       </div>
