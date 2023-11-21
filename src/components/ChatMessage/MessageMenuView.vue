@@ -24,6 +24,9 @@ export default {
             }
             this.$emit("editMessage", this.messageContent)
         },
+        deleteMessage() {
+            this.$emit("deleteMessage");
+        },
         handleKeyDown(event) {
             if (event.keyCode === 27) {
                 this.close()
@@ -52,7 +55,7 @@ export default {
                     <ul>
                         <li type="submit" class="button m-1 is-block is-success" @click="saveAndEdit">save & edit</li>
                         <li class="button m-1 is-block is-info">👍</li>
-                        <li class="button is-danger is-block m-1">delete</li>
+                        <li class="button is-danger is-block m-1" @click="deleteMessage">delete</li>
                     </ul>
                 </form>
 

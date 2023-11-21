@@ -116,7 +116,14 @@ export default {
             this.isInterlocutorTyping = event_data.is_typing
           }
         } else if (event_type == "private_chat_edit_message") {
-          console.log("MESSAGE EDITED!")
+          for (let i = 0; i < this.messages.length; i++) {
+            if (this.messages[i].id === event_data.message.id) {
+              this.messages[i] = event_data.message;
+              break;
+            }
+          }
+        } else if (event_type == "private_chat_message_delete") {
+          this.messages = this.messages.filter(message => message.id !== event_data.msg_id)
         }
       } catch {
         console.log("ERROR PARSING WEBSOCKET MESSAGE!")
@@ -237,9 +244,16 @@ export default {
       if (this.webSocket.readyState == WebSocket.OPEN) {
         this.webSocket.send(JSON.stringify(message))
       }
-      var editedMsg = this.messages.find(message => message.id === msgId)
-      editedMsg.is_edited = true,
-      editedMsg.content = newMessageContent
+    },
+    deleteMessage(msgId) {
+      const message = {
+        EVENT_TYPE: "private_chat_message_delete",
+        message_id: msgId,
+      }
+
+      if (this.webSocket.readyState == WebSocket.OPEN) {
+        this.webSocket.send(JSON.stringify(message))
+      }
     }
   },
   watch: {
@@ -387,7 +401,7 @@ export default {
 
         <div id="msgLstDiv" class="message-list px-4 is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
           <MessageView v-for="message in messages" :key="message.id" :message="message" :chatObj="chatObj"
-            :created_at="normalizeDate(message.created_at)" @editMessage="editMessage" />
+            :created_at="normalizeDate(message.created_at)" @editMessage="editMessage" @deleteMessage="deleteMessage" />
         </div>
       </div>
 

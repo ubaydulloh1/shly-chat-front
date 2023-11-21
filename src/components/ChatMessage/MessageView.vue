@@ -29,6 +29,10 @@ export default {
     editMessage(newMsgContent) {
       this.$emit("editMessage", this.message.id, newMsgContent)
       this.iSshowMessageMenu = false;
+    },
+    deleteMessage() {
+      this.$emit("deleteMessage", this.message.id)
+      this.iSshowMessageMenu = false;
     }
   }
 }
@@ -37,7 +41,8 @@ export default {
 <template>
   <div v-if="message.recipient.id == chatObj.chat.user.id" class="message-container sent-message" style="width: 100%;">
 
-    <MessageMenuView :message="message" v-if="this.iSshowMessageMenu" @closeMenu="closeMenu" @editMessage="editMessage" />
+    <MessageMenuView :message="message" v-if="this.iSshowMessageMenu" @closeMenu="closeMenu" @editMessage="editMessage"
+      @deleteMessage="deleteMessage" />
 
     <div class="message my-2 has-background-primary-light" @contextmenu.prevent="showMessageMenu(message.id)">
       <p class="p-3 has-text-left">{{ message.content }}</p>
@@ -52,7 +57,8 @@ export default {
   </div>
 
   <div v-else-if="message.sender.id == chatObj.chat.user.id" class="message-container received-message">
-    <MessageMenuView :message="message" v-if="this.isShowMessageMenu" @closeMenu="closeMenu" @editMessage="editMessage" />
+    <MessageMenuView :message="message" v-if="this.isShowMessageMenu" @closeMenu="closeMenu" @editMessage="editMessage"
+      @deleteMessage="deleteMessage" />
     <div class="message received-message my-2" @contextmenu.prevent="showMessageMenu(message.id)">
       <p class="p-3 has-text-left">{{ message.content }}</p>
       <div class="is-flex is-justify-content-end">
