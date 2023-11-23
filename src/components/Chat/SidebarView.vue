@@ -34,6 +34,7 @@ export default {
     },
     fetchChats() {
       this.isArchiveButtonLoading = true;
+
       axios.get(
         "chat/chatList/",
         {
@@ -52,13 +53,13 @@ export default {
         })
         .then(data => {
           this.chats = data.results
+          setTimeout(() => {
+            this.isArchiveButtonLoading = false;
+          }, 50)
         })
         .catch(error => {
           console.log("ERROR: ", error)
         })
-      setTimeout(() => {
-        this.isArchiveButtonLoading = false;
-      }, 200)
 
     },
   },
@@ -129,12 +130,12 @@ export default {
 }
 
 .archive-button {
-  width: 100%;
+  width: calc(100% - 5px) !important;
 }
 
 #chat-list {
-  width: calc(100% - 10px);
-  margin-left: 5px;
+  width: 100% !important;
+  margin: 0;
   height: 100%;
   overflow-y: auto;
 }

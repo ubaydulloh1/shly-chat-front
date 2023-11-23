@@ -18,9 +18,10 @@ body {
   position: fixed !important;
   top: 0 !important;
 }
-.home {
+.home, .login, .register{
   position: fixed !important;
   top: 52px !important;
+  width: 100%;
   height: calc(100dvh - 52px) !important;
 }
 
@@ -38,6 +39,7 @@ textarea:focus {
 
 ::-webkit-scrollbar {
   width: 4px;
+  position: absolute !important;
 }
 
 /* Track */
