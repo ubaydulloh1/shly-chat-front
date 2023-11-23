@@ -1,56 +1,87 @@
-*{
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
-html{
-    height: 100vh;
-    /* overflow: hidden; */
+html {
+  height: 100vh;
+  /* overflow: hidden; */
 }
-body{
-    scroll-behavior: smooth;
-    scrollbar-width: thin !important;
-    box-sizing: border-box;
-    height: 100%;
-}
-
-.is-cursor-pointable{
-    cursor: pointer;
+body {
+  scroll-behavior: smooth;
+  scrollbar-width: thin !important;
+  box-sizing: border-box;
+  height: 100%;
 }
 
-.is-clickable-input-icon{
-    pointer-events: initial !important;
-    cursor: pointer;
-    color: #aaa;
+input,
+textarea {
+  outline: none !important;
+  box-shadow: none !important;
 }
-.is-clickable-input-icon:hover{
-    pointer-events: initial !important;
-    cursor: pointer;
+input,
+textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 1px solid #ddd !important;
 }
-.image img{
-    object-fit: cover !important;
-    object-position: center;
-    height: 100%;
-    width: 100%;
+
+::-webkit-scrollbar {
+  width: 4px;
 }
-.is-full-width{
-    width: 100%;
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #aaa;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+.is-cursor-pointable {
+  cursor: pointer;
+}
+
+.is-clickable-input-icon {
+  pointer-events: initial !important;
+  cursor: pointer;
+  color: #aaa;
+}
+.is-clickable-input-icon:hover {
+  pointer-events: initial !important;
+  cursor: pointer;
+}
+.image img {
+  object-fit: cover !important;
+  object-position: center;
+  height: 100%;
+  width: 100%;
+}
+.is-full-width {
+  width: 100%;
 }
 
 @keyframes loaderRotate {
-0% {
+  0% {
     transform: rotate(0deg);
-}
-100% {
+  }
+  100% {
     transform: rotate(360deg);
-}
+  }
 }
 
-#typingAnimation{
-animation: typingAnimation 1.5s infinite ease;
+#typingAnimation {
+  animation: typingAnimation 1.5s infinite ease;
 }
-.load-more{
-width: 100%;
-position: absolute;
+.load-more {
+  width: 100%;
+  position: absolute;
 }
-.load-more i{
-animation: loaderRotate 1.5s infinite ease-out;
+.load-more i {
+  animation: loaderRotate 1.5s infinite ease-out;
 }

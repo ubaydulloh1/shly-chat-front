@@ -16,7 +16,7 @@ export default {
       webSocket: null,
 
       allMessageCount: 0,
-      messageLimit: 10,
+      messageLimit: 15,
       messageOffset: 0,
       isMessageLoading: false,
       isFetchingMessages: false,
@@ -414,7 +414,7 @@ export default {
               </button>
             </div>
             <div class="control" style="width: 100%">
-              <input ref="messageInput" class="input is-success p-5" type="text" placeholder="Message"
+              <input ref="messageInput" class="input p-5" type="text" spellcheck="false" placeholder="Message"
                 v-model="inputMessageValue" @input="handleTyping" />
               <audio hidden="true" ref="messageAudio">
                 <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
