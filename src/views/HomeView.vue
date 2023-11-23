@@ -9,7 +9,7 @@ export default {
     ChatWindowView,
   },
   props: ["myId"],
-  data(){
+  data() {
     return {
       isMobile: false,
       isChatSelected: false,
@@ -17,52 +17,50 @@ export default {
     }
   },
   methods: {
-    chatSelected(chatId){
+    chatSelected(chatId) {
       this.selectedChatId = chatId
       this.isChatSelected = true
       this.$store.commit("setSelectedChatId", chatId)
     },
-    backToChats(){
+    backToChats() {
       this.isChatSelected = false
       this.selectedChatId = null
       this.$store.commit("removeSelectedChatId")
     },
-    updateIsMobile(){
+    updateIsMobile() {
       this.isMobile = window.innerWidth <= 768
     },
   },
-  created(){
+  created() {
     const selectedChatId = this.$store.state.selectedChatId
     this.isMobile = window.innerWidth <= 768
-
-    console.log("SELECTED CHAT ID: ", selectedChatId)
-
-    if (selectedChatId){
+    if (selectedChatId) {
       this.isChatSelected = true
       this.selectedChatId = selectedChatId
     }
     window.addEventListener("resize", this.updateIsMobile)
   },
-  beforeMount(){
+  beforeMount() {
     const access = this.$store.state.access
-    if (!access){
+    if (!access) {
       this.$router.push("/login")
     }
   },
-  beforeUnmount(){
+  beforeUnmount() {
     window.removeEventListener('resize', this.updateIsMobile)
   }
 }
 </script>
 
 <template>
-  <div class="home is-flex-desktop is-flex-tablet" ref="homeRef">
+  <div class="home is-flex-tablet" ref="homeRef">
     <div v-if="!isChatSelected | !isMobile" class="chat-sidebar">
-      <SidebarView @selectedChat="chatSelected" :myId="myId"/>
+      <SidebarView @selectedChat="chatSelected" :myId="myId" />
     </div>
-    
+
     <div class="chat-window" v-if="isChatSelected">
-      <ChatWindowView :chatId="selectedChatId" :myId="myId" @backToChats="backToChats" @openProfile="(userId)=>{this.$emit('openProfile', userId)}"/>
+      <ChatWindowView :chatId="selectedChatId" :myId="myId" @backToChats="backToChats"
+        @openProfile="(userId) => { this.$emit('openProfile', userId) }" />
     </div>
 
     <div class="chat-window" v-else-if="!isChatSelected && !isMobile">
@@ -75,27 +73,44 @@ export default {
 </template>
 
 <style scoped>
-
-.chat-window{
+.chat-window {
   height: 100%;
   width: 100%;
 }
 
 @media screen and (max-width: 768px) {
-  .home{
-    padding: 0 0px;
+  .home {
+    width: 100%;
+    padding: 0 2px;
+  }
+
+  .home .chat-sidebar {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
+
 @media screen and (min-width: 769px) and (max-width: 1324px) {
-  .home{
+  .home {
+    width: 100%;
+    display: flex;
     padding: 0 50px;
+  }
+
+  .home .chat-sidebar {
+    width: 30% !important;
   }
 }
 
 @media screen and (min-width: 1325px) {
-  .home{
+  .home {
+    width: 100%;
+    display: flex;
     padding: 0 100px;
   }
-}
 
+  .home .chat-sidebar {
+    width: 30% !important;
+  }
+}
 </style>

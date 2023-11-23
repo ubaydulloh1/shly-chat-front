@@ -399,7 +399,7 @@ export default {
           <i class="fa-solid fa-spinner"></i>
         </div>
 
-        <div id="msgLstDiv" class="message-list px-4 is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
+        <div id="msgLstDiv" class="message-list is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
           <MessageView v-for="message in messages" :key="message.id" :message="message" :chatObj="chatObj"
             :created_at="normalizeDate(message.created_at)" @editMessage="editMessage" @deleteMessage="deleteMessage" />
         </div>
