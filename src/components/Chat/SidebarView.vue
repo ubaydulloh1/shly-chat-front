@@ -33,6 +33,7 @@ export default {
       this.$emit("selectedChat", chatId)
     },
     fetchChats() {
+      this.isArchiveButtonLoading = true;
       axios.get(
         "chat/chatList/",
         {
@@ -55,6 +56,10 @@ export default {
         .catch(error => {
           console.log("ERROR: ", error)
         })
+      setTimeout(() => {
+        this.isArchiveButtonLoading = false;
+      }, 200)
+
     },
   },
   mounted() {
@@ -78,7 +83,8 @@ export default {
 
     <div class="chats-container">
       <div id="chat-list">
-        <button class="archive-button button is-medium is-danger" @click="toggleArchived" v-if="isArchivedOpen">
+        <button class="archive-button button is-medium is-danger" :class="{ 'is-loading': isArchiveButtonLoading }"
+          @click="toggleArchived" v-if="isArchivedOpen">
           <p class="is-size-7">close</p>
         </button>
 
@@ -127,13 +133,9 @@ export default {
 }
 
 #chat-list {
-  width: 100%;
-  border-radius: 5px;
+  width: calc(100% - 10px);
+  margin-left: 5px;
   height: 100%;
   overflow-y: auto;
-  scrollbar-width: thin !important;
-  scrollbar-color: blue orange;
-  /* scroll thumb and track */
 }
 </style>
-  

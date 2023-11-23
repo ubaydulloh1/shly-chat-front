@@ -32,7 +32,8 @@ export default {
     MessageView,
   },
   methods: {
-    handleSendMessage() {
+    handleSendMessage(event) {
+      event.preventDefault();
       if (this.inputMessageValue.trim() === '') return;
       if (this.chatObj.chat.type === "PRIVATE") {
         this.handlePrivateChatMessage()
@@ -107,9 +108,11 @@ export default {
           this.scrollToLastMessage()
 
           if (event_data.message.sender.id === this.myId) {
-            this.$refs.messageAudio.play()
+            // this.$refs.messageAudio.play()
+            console.log()
           } else {
-            this.$refs.messageReceiveAudio.play()
+            // this.$refs.messageReceiveAudio.play()
+            console.log()
           }
         } else if (event_type == "private_chat_user_typing_status") {
           if (event_data.user_id !== this.myId) {
@@ -424,7 +427,7 @@ export default {
               </audio>
             </div>
             <div class="control">
-              <button type="submit" class="button is-success is-medium">
+              <button type="button" class="button is-success is-medium" @click="handleSendMessage">
                 <i class="far fa-paper-plane is-size-5 is-size-6-mobile"></i>
               </button>
             </div>
