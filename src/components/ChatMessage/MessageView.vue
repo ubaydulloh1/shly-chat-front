@@ -33,7 +33,10 @@ export default {
     deleteMessage() {
       this.$emit("deleteMessage", this.message.id)
       this.iSshowMessageMenu = false;
-    }
+    },
+    reactMessage() {
+      console.log("DOUBLE CLICKED!");
+    },
   }
 }
 </script>
@@ -59,7 +62,8 @@ export default {
   <div v-else-if="message.sender.id == chatObj.chat.user.id" class="message-container received-message">
     <MessageMenuView :message="message" v-if="this.isShowMessageMenu" @closeMenu="closeMenu" @editMessage="editMessage"
       @deleteMessage="deleteMessage" />
-    <div class="message received-message my-2" @contextmenu.prevent="showMessageMenu(message.id)">
+    <div class="message received-message my-2" @contextmenu.prevent="showMessageMenu(message.id)"
+      @dblclick="reactMessage">
       <p class="p-3 has-text-left">{{ message.content }}</p>
       <div class="is-flex is-justify-content-end">
         <span v-if="message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
@@ -73,12 +77,14 @@ export default {
 <style scoped>
 .message-container {
   display: flex;
+  padding: 0 10px;
 }
 
 .message {
   display: block;
   max-width: 700px;
   min-width: 120px;
+  overflow-wrap: break-word;
 }
 
 .sent-message {

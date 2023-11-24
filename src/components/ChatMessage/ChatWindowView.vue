@@ -456,7 +456,7 @@ export default {
 
 #msgLstDiv {
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 @keyframes typingAnimation {

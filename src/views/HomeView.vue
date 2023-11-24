@@ -100,6 +100,9 @@ export default {
   .home .chat-sidebar {
     width: 30% !important;
   }
+  .home .chat-window {
+    width: 70% !important;
+  }
 }
 
 @media screen and (min-width: 1325px) {
@@ -110,7 +113,10 @@ export default {
   }
 
   .home .chat-sidebar {
-    width: 30% !important;
+    width: 25% !important;
+  }
+  .home .chat-window {
+    width: 70% !important;
   }
 }
 </style>

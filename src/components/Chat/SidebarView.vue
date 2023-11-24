@@ -130,16 +130,19 @@ export default {
 }
 
 .archive-button {
-  width: calc(100% - 5px) !important;
+  width: 100%;
 }
 
 #chat-list {
   width: 100% !important;
   margin: 0;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
-@media screen and (min-width: 13px) {
-  
+
+@media screen and (min-width: 1024px) {
+  #chat-list {
+    height: 93%;
+  }
 }
 </style>

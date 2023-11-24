@@ -126,7 +126,8 @@ export default {
           </figure>
 
           <ProfileHeaderModalView v-if="showProfileHeaderModal" :showProfileHeaderModal="showProfileHeaderModal"
-            @closeProfileHeaderModal="toggleProfileHeader" @logoutClick="handleLogout" @openAccountView="toggleAccountView"/>
+            @closeProfileHeaderModal="toggleProfileHeader" @logoutClick="handleLogout"
+            @openAccountView="toggleAccountView" />
 
         </div>
       </div>
@@ -149,7 +150,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   height: 100%;
-  /* overflow-y: auto; */
 }
 
 .navbar {

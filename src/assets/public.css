@@ -38,8 +38,7 @@ textarea:focus {
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
-  position: absolute !important;
+  width: 3px;
 }
 
 /* Track */
