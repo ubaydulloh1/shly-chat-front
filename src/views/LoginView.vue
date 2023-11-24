@@ -60,7 +60,7 @@ export default {
 </script>
 
 <template>
-    <div class="login container">
+    <div class="login">
         <div class="block is-flex is-justify-content-center is-align-content-center">
             <form action="" @submit.prevent="handleLoginSubmit">
                 <div class="field">
@@ -119,6 +119,9 @@ export default {
 </template>
 
 <style scoped>
+.login{
+    margin-top: 10%;
+}
 .control .showpassword-icon {
     pointer-events: initial !important;
 }

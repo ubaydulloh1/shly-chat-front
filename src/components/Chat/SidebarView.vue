@@ -98,7 +98,7 @@ export default {
               <i class="fa-solid fa-box-archive"></i>
             </div>
           </div>
-          <div v-if="!isArchiveButtonLoading" class="is-size-7-mobile has-text-white">
+          <div v-if="!isArchiveButtonLoading" class="is-size-7 has-text-white">
             <p class="has-text-center">Archived conversations</p>
             <p class="has-text-center">2 conversations</p>
           </div>
@@ -138,5 +138,8 @@ export default {
   margin: 0;
   height: 100%;
   overflow-y: auto;
+}
+@media screen and (min-width: 13px) {
+  
 }
 </style>

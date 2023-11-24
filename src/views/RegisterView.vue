@@ -118,7 +118,7 @@ export default {
 </script>
 
 <template>
-    <div class="register container">
+    <div class="register">
         <div class="block is-flex is-justify-content-center is-align-content-center">
             <form action="" @submit.prevent="handleSubmit">
                 <div class="field">
@@ -234,7 +234,12 @@ export default {
     </div>
 </template>
 
-<style scoped>.control .showpassword-icon {
+<style scoped>
+
+.register{
+    margin-top: 10%;
+}
+.control .showpassword-icon {
     pointer-events: initial !important;
 }
 
