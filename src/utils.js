@@ -1,36 +1,17 @@
-export const dateWithoutTime = function(date) {
+export const dateWithoutTime = function (date) {
     return date ? date.split("T")[0] : ""
 }
-export const normalizeDate = function(date_str) {
-    if (!date_str){
-        return "recently";
-    }
+export const normalizeMsgDate = function (dateStr) {
+    var msgDate = new Date(dateStr);
+    var now = new Date()
 
-    var date = new Date(date_str);
-    var currentDate = new Date(); // Get the current date and time
+    const diffMsgDateMilliseconds = now - msgDate
+    const millisecondsInADay = 24 * 60 * 60 * 1000;
 
-    // Calculate the difference in milliseconds between the current date and the input date
-    var timeDifference = currentDate.getTime() - date.getTime();
-
-    var options = {
-        hour: 'numeric',
-        minute: 'numeric',
-        // second: 'numeric',
-        hour12: false // Use 24-hour format
-    };
-
-    if (timeDifference < 24 * 60 * 60 * 1000) { // If the time difference is less than 1 day (in milliseconds)
-        return date.toLocaleDateString(undefined, options); // Show the date with hour, minute, and second
+    if (diffMsgDateMilliseconds >= millisecondsInADay) {
+        const msgDte = now.toLocaleDateString("uz", { year: "numeric", month: "numeric", day: "2-digit" }) + " " + msgDate.toLocaleTimeString('uz', { "hour12": false, hour: "2-digit", minute: "2-digit" })
+        return msgDte
     } else {
-        options = {
-            hour: 'numeric',
-            minute: 'numeric',
-            // second: 'numeric',
-            day: '2-digit',
-            month: 'numeric',
-            year: 'numeric',
-            hour12: false // Use 24-hour format
-        };
-        return date.toLocaleString(undefined, options); // Show the date and time with the specified format
+        return msgDate.toLocaleTimeString('uz', { "hour12": false, hour: "2-digit", minute: "2-digit" });
     }
 };

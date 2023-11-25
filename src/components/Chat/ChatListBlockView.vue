@@ -1,6 +1,6 @@
 
 <script>
-import { normalizeDate } from '@/utils';
+import { normalizeMsgDate } from '@/utils';
 
 export default {
   name: 'ChatListBlockView',
@@ -12,7 +12,7 @@ export default {
     chatSelected() {
       this.$emit("chatSelected")
     },
-    normalizeDate,
+    normalizeMsgDate,
   },
 }
 </script>
@@ -41,7 +41,7 @@ export default {
           </p>
         </div>
         <div class="is-flex is-flex-direction-column is-justify-content-space-between">
-          <p class="is-size-7">{{ normalizeDate(chatObj.last_message_created_at) }}</p>
+          <p class="is-size-7">{{ normalizeMsgDate(chatObj.last_message_created_at) }}</p>
 
           <div class="is-flex is-justify-content-space-between">
             <p class="mr-1" v-if="chatObj.last_message_sender_id === myId">

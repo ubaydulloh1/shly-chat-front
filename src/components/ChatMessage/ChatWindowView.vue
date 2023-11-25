@@ -1,7 +1,10 @@
 <script>
 import axios from 'axios'
+import EmojiPicker from 'vue3-emoji-picker'
+import 'vue3-emoji-picker/css'
+
 import MessageView from '@/components/ChatMessage/MessageView.vue'
-import { normalizeDate } from '@/utils'
+import { normalizeMsgDate } from '@/utils'
 
 
 export default {
@@ -25,11 +28,13 @@ export default {
 
       amITyping: false,
       typingTimeOut: null,
+      showEmojiPicker: false,
     }
   },
   props: ["chatId", "myId"],
   components: {
     MessageView,
+    EmojiPicker,
   },
   methods: {
     handleSendMessage(event) {
@@ -49,6 +54,16 @@ export default {
       this.inputMessageValue = ''
     },
     handlePrivateChatMessage() {
+
+      let now = new Date()
+      var msg = {
+        "id": 0,
+        "content": this.inputMessageValue,
+        "is_own_message": true,
+        "created_at": now.toLocaleDateString("uz", { year: "numeric", month: "numeric", day: "2-digit" }) + " " + now.toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+      }
+      this.messages.unshift(msg)
+
       const message = {
         EVENT_TYPE: "private_chat_send_message",
         receiver_id: this.chatObj.chat.user.id,
@@ -104,7 +119,14 @@ export default {
           }
         } else if (event_type == "private_chat_send_message") {
           const message = event_data.message
-          this.messages.unshift(message)
+
+          for (let i = 0; i < this.messages.length; i++) {
+            if (!this.messages[i].id && this.messages[i].content === message.content) {
+              this.messages[i] = message;
+              break;
+            }
+          }
+
           this.scrollToLastMessage()
 
           if (event_data.message.sender.id === this.myId) {
@@ -172,8 +194,9 @@ export default {
           console.log(error)
         })
     },
-    normalizeDate,
-    handleTyping() {
+    normalizeMsgDate,
+    handleTyping(e) {
+      e.preventDefault();
       this.startTyping()
 
       if (this.typingTimeOut) {
@@ -257,6 +280,13 @@ export default {
       if (this.webSocket.readyState == WebSocket.OPEN) {
         this.webSocket.send(JSON.stringify(message))
       }
+    },
+    onSelectEmoji(emoji) {
+      this.inputMessageValue = this.inputMessageValue + emoji.i
+      this.$refs.messageInput.focus()
+    },
+    toggleEmojiPicker() {
+      this.showEmojiPicker = !this.showEmojiPicker;
     }
   },
   watch: {
@@ -323,7 +353,7 @@ export default {
             <p class="is-size-7 has-text-info typing-text" v-if="isInterlocutorOnline && isInterlocutorTyping">typing ...
             </p>
             <p class="is-size-7 has-text-success" v-else-if="isInterlocutorOnline">online</p>
-            <p class="is-size-7" v-else>last seen at {{ normalizeDate(chatObj.chat.user.last_seen_at) }}</p>
+            <p class="is-size-7" v-else>last seen at {{ normalizeMsgDate(chatObj.chat.user.last_seen_at) }}</p>
 
           </div>
         </div>
@@ -403,22 +433,25 @@ export default {
         </div>
 
         <div id="msgLstDiv" class="message-list is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
-          <MessageView v-for="message in messages" :key="message.id" :message="message" :chatObj="chatObj"
-            :created_at="normalizeDate(message.created_at)" @editMessage="editMessage" @deleteMessage="deleteMessage" />
+          <MessageView v-for="(message, index) in messages" :key="index" :message="message" :chatObj="chatObj"
+            @editMessage="editMessage" @deleteMessage="deleteMessage" />
         </div>
       </div>
 
       <div class="message-input-container is-flex is-flex-direction-column">
         <form @submit.prevent="handleSendMessage">
-          <div class="field has-addons my-3 px-1">
-            <div class="control">
-              <button class="button is-outlined is-success is-medium">
-                <i class="far fa-smile is-size-5 is-size-6-mobile"></i>
-              </button>
+
+          <div class="is-flex">
+            <div class="control emoji-container">
+              <i class="far fa-smile is-size-5 is-size-6-mobile" @click="toggleEmojiPicker"></i>
+              <EmojiPicker v-if="showEmojiPicker" class="emoji-picker" :native="true" @select="onSelectEmoji" />
             </div>
-            <div class="control" style="width: 100%">
-              <input ref="messageInput" class="input p-5" type="text" spellcheck="false" placeholder="Message"
-                v-model="inputMessageValue" @input="handleTyping" />
+            <div class="control has-icons-left">
+              <input ref="messageInput" class="input is-medium" type="text" spellcheck="false"
+                placeholder="Send message ..." v-model="inputMessageValue" @input="handleTyping" />
+              <span class="messageIcon icon is-small is-left">
+                <i class="far fa-smile is-size-5 is-size-6-mobile" @click="toggleEmojiPicker"></i>
+              </span>
               <audio hidden="true" ref="messageAudio">
                 <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
               </audio>
@@ -427,11 +460,13 @@ export default {
               </audio>
             </div>
             <div class="control">
-              <button type="button" class="button is-success is-medium" @click="handleSendMessage">
+              <button class="button is-success is-medium" @click="handleSendMessage">
                 <i class="far fa-paper-plane is-size-5 is-size-6-mobile"></i>
               </button>
             </div>
+            <!-- </div> -->
           </div>
+
         </form>
 
       </div>
@@ -459,6 +494,10 @@ export default {
   overflow-y: scroll;
 }
 
+::-webkit-scrollbar {
+  width: 0px !important;
+}
+
 @keyframes typingAnimation {
   0% {
     color: red;
@@ -481,5 +520,19 @@ export default {
 form {
   position: sticky;
   bottom: 0;
+}
+
+.emoji-picker {
+  position: absolute;
+  bottom: 4em;
+}
+
+.messageIcon {
+  color: dark !important;
+  z-index: 200;
+}
+
+.messageIcon:hover {
+  cursor: pointer;
 }
 </style>

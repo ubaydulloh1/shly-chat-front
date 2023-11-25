@@ -18,7 +18,9 @@ body {
   position: fixed !important;
   top: 0 !important;
 }
-.home, .login, .register{
+.home,
+.login,
+.register {
   position: fixed !important;
   top: 52px !important;
   width: 100% !important;
@@ -97,4 +99,7 @@ textarea:focus {
 }
 .load-more i {
   animation: loaderRotate 1.5s infinite ease-out;
+}
+.unset-all {
+  all: unset !important;
 }

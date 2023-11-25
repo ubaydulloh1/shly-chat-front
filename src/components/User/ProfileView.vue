@@ -1,6 +1,6 @@
 <script>
 import axios from 'axios'
-import { normalizeDate } from '@/utils'
+import { normalizeMsgDate } from '@/utils'
 
 export default {
     name: "ProfileView",
@@ -60,7 +60,7 @@ export default {
                     console.log(err)
                 })
         },
-        normalizeDate
+        normalizeMsgDate
     },
     mounted() {
         this.fetchUserProfile(this.userId)
@@ -98,7 +98,7 @@ export default {
                     <div class="is-flex is-flex-direction-column is-justify-content-space-between p-2 has-text-left">
                         <h2 v-if="user">{{ user.first_name }} {{ user.last_name }}</h2>
                         <h2 v-else>Unknown</h2>
-                        <p v-if="user" class="is-size-7">last seen at {{ normalizeDate(user.last_seen_at) }}</p>
+                        <p v-if="user" class="is-size-7">last seen at {{ normalizeMsgDate(user.last_seen_at) }}</p>
                         <p v-else class="is-size-7">last seen at recently</p>
                     </div>
                 </div>

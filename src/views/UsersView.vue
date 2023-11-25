@@ -1,6 +1,6 @@
 <script>
 import axios from 'axios';
-import { normalizeDate } from '@/utils';
+import { normalizeMsgDate } from '@/utils';
 
 export default {
     name: "UsersView",
@@ -29,7 +29,7 @@ export default {
         openUserProfile(userId) {
             this.$emit("openProfile", userId)
         },
-        normalizeDate
+        normalizeMsgDate
     },
     created() {
         const access = this.$store.state.access
@@ -68,7 +68,7 @@ export default {
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                             Phasellus nec iaculis mauris.
                         </div>
-                        <time datetime="2016-1-1">last seen at {{ normalizeDate(user.last_seen_at) }}</time>
+                        <time datetime="2016-1-1">last seen at {{ normalizeMsgDate(user.last_seen_at) }}</time>
 
                     </div>
                 </div>
