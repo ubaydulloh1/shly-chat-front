@@ -45,8 +45,8 @@ export default {
 
 <template>
   <div class="message-container" :class="{
-    'sent-message': message.is_own_message,
-    'received-message': !message.is_own_message
+    'sent-message': chatObj.chat.type != 'CHANNEL' && message.is_own_message,
+    'received-message': chatObj.chat.type != 'CHANNEL' && !message.is_own_message
   }" style="width: 100%;">
 
     <MessageMenuView :message="message" v-if="this.iSshowMessageMenu" @closeMenu="closeMenu" @editMessage="editMessage"
@@ -60,10 +60,12 @@ export default {
         <span class="is-size-7 is-italic">{{
           message.sender.first_name.substring(0, 10) }}</span>
       </div>
-      <div class="message mb-3 has-text-dark has-text-left" :class="{
-        'has-background-white-ter': !message.is_own_message,
-        'has-background-primary-light': message.is_own_message
-      }" @contextmenu.prevent="showMessageMenu(message.id)">
+
+      <div v-if="chatObj.chat.type === 'PRIVATE' || chatObj.chat.type === 'GROUP'"
+        class="message mb-3 has-text-dark has-text-left" :class="{
+          'has-background-white-ter': !message.is_own_message,
+          'has-background-primary-light': message.is_own_message
+        }" @contextmenu.prevent="showMessageMenu(message.id)">
         <p class="py-2 px-3 has-text-left">
           {{ message.content }}
         </p>
@@ -86,6 +88,25 @@ export default {
         </div>
 
       </div>
+      <div v-else class="post-message message mb-3" @contextmenu.prevent="showMessageMenu(message.id)">
+        <p class="py-2 px-3 has-text-left">
+          {{ message.content }}
+        </p>
+
+        <div v-if="message.id" class="is-flex is-justify-content-end px-2 pb-2">
+          <span v-if="message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
+          <span class="is-size-7 px-1" v-if="message.is_edited">edited</span>
+          <span class="is-size-7">1<i class="fa-solid fa-eye px-1"></i></span>
+          <p class="px-1 is-size-7 has-text-right">{{ normalizeMsgDate(message.created_at) }}</p>
+        </div>
+
+        <div v-else class="is-flex is-justify-content-end px-2 pb-2">
+          <i class="px-1 fa-regular fa-clock is-size-7"></i>
+          <p class="px-1 is-size-7 has-text-right">{{ normalizeMsgDate(message.created_at) }}</p>
+        </div>
+
+      </div>
+
     </div>
   </div>
 </template>
@@ -101,6 +122,10 @@ export default {
   max-width: 700px;
   min-width: 120px;
   overflow-wrap: break-word;
+}
+
+.post-message {
+  max-width: 1100px;
 }
 
 .sent-message {

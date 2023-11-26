@@ -45,8 +45,7 @@ export default {
       if (this.chatObj.chat.type === "PRIVATE" || this.chatObj.chat.type === "GROUP") {
         this.handleSocketSendChatMessage()
       } else if (this.chatObj.chat.type === "CHANNEL") {
-        // TODO handle channel message
-        console.log()
+        this.handleSocketSendChatMessage();
       } else return
 
       // this.$refs.messageInput.focus()
@@ -415,7 +414,7 @@ export default {
         </div>
       </div>
 
-      <div class="message-input-container is-flex is-flex-direction-column">
+      <div v-if="chatObj.chat.type === 'PRIVATE' && chatObj.chat.type === 'GROUP' || chatObj.chat.type === 'CHANNEL' && chatObj.chat.is_own_channel" class="message-input-container is-flex is-flex-direction-column">
         <form @submit.prevent="handleSendMessage">
 
           <div class="control has-icons-left has-icons-right pb-3">
