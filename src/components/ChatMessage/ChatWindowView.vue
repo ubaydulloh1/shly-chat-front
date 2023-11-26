@@ -339,18 +339,20 @@ export default {
 <template>
   <div id="chat-area" class="is-flex is-flex-direction-column" v-if="chatObj">
 
-    <div v-if="chatObj.chat.type == 'PRIVATE'" class="chat-profile-header is-flex px-3">
+    <div class="chat-profile-header is-flex px-3">
       <div class="is-flex is-justify-content-space-between" style="width: 100%">
-
         <div class="is-flex">
           <div class="is-flex">
             <div class="p-3 mr-2">
               <i @click="handleBackToChats" class="fa-solid fa-arrow-left is-cursor-pointable"></i>
             </div>
             <figure class="image is-48x48 is-cursor-pointable" @click="openUserProfile">
-              <img v-if="chatObj.chat.type == 'PRIVATE' && chatObj.chat.user.avatar" class="is-rounded"
-                :src="chatObj.chat.user.avatar">
-              <img v-else class="is-rounded" src="../../assets/images/default_avatar.png">
+              <img v-if="chatObj.chat.type == 'PRIVATE'" class="is-rounded"
+                :src="chatObj.chat.user.avatar ? chatObj.chat.user.avatar : 'default_avatar.png'">
+              <img v-else-if="chatObj.chat.type == 'GROUP'" class="is-rounded"
+                :src="chatObj.chat.image ? chatObj.chat.image : 'default_group_avatar.svg'">
+              <img v-else-if="chatObj.chat.type == 'CHANNEL'" class="is-rounded"
+                :src="chatObj.chat.image ? chatObj.chat.image : 'channel_default_avatar.svg'">
             </figure>
 
           </div>
@@ -364,10 +366,17 @@ export default {
               {{ chatObj.chat.name }}
             </h4>
 
-            <p class="is-size-7 has-text-info typing-text" v-if="isInterlocutorOnline && isInterlocutorTyping">typing ...
-            </p>
-            <p class="is-size-7 has-text-success" v-else-if="isInterlocutorOnline">online</p>
-            <p class="is-size-7" v-else>last seen at {{ normalizeMsgDate(chatObj.chat.user.last_seen_at) }}</p>
+            <div v-if="chatObj.chat.type === 'PRIVATE'">
+              <p class="is-size-7 has-text-info typing-text" v-if="isInterlocutorOnline && isInterlocutorTyping">
+                typing ...
+              </p>
+              <p class="is-size-7 has-text-success" v-else-if="isInterlocutorOnline">online</p>
+              <p class="is-size-7" v-else>last seen at {{
+                normalizeMsgDate(chatObj.chat.user.last_seen_at) }}</p>
+            </div>
+            <div v-else>
+              <p>312 subscribers</p>
+            </div>
 
           </div>
         </div>
@@ -392,7 +401,7 @@ export default {
       </div>
     </div>
 
-    <div v-else-if="chatObj.chat.type == 'GROUP'" class="chat-profile-header is-flex px-3">
+    <!-- <div v-else-if="chatObj.chat.type == 'GROUP'" class="chat-profile-header is-flex px-3">
       <div class="is-flex is-justify-content-space-between" style="width: 100%">
         <div class="is-flex">
           <figure class="image is-48x48 is-cursor-pointable">
@@ -403,9 +412,6 @@ export default {
             <h4 class="is-size-6 is-cursor-pointable">
               {{ chatObj.chat.name }}
             </h4>
-
-            <!-- <p class="is-size-7" v-if="isInterlocutorOnline && isInterlocutorTyping">typing ...</p>
-              <p class="is-size-7" v-else-if="isInterlocutorOnline">online</p> -->
             <p class="is-size-7">3219 members</p>
           </div>
 
@@ -446,8 +452,7 @@ export default {
           </div>
         </div>
       </div>
-    </div>
-    <div v-else class="chat-profile-header is-flex px-3">ELSE!</div>
+    </div> -->
 
     <div class="chat-container is-flex is-flex-direction-column is-justify-content-space-between">
       <div class="chat-body is-relative">
