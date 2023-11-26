@@ -22,6 +22,8 @@ export default {
       messageLimit: 15,
       messageOffset: 0,
       isMessageLoading: false,
+      showSearchMessageInput: false,
+      messageSearchValue: '',
       isFetchingMessages: false,
       msgLstDiv: null,
       messages: [],
@@ -120,11 +122,17 @@ export default {
         } else if (event_type == "private_chat_send_message") {
           const message = event_data.message
 
-          for (let i = 0; i < this.messages.length; i++) {
-            if (!this.messages[i].id && this.messages[i].content === message.content) {
-              this.messages[i] = message;
-              break;
+          if (message.sender.id == this.myId) {
+            message.is_own_message = true;
+            for (let i = 0; i < this.messages.length; i++) {
+              if (!this.messages[i].id && this.messages[i].content === message.content) {
+                this.messages[i] = message;
+                break;
+              }
             }
+          } else {
+            message.is_own_message = false;
+            this.messages.unshift(message);
           }
 
           this.scrollToLastMessage()
@@ -179,7 +187,7 @@ export default {
     },
     fetchMessages(chatId) {
       axios.get(
-        "/chat/" + chatId + "/messages/?limit=" + this.messageLimit + "&offset=" + this.messageOffset,
+        "/chat/" + chatId + "/messages/?limit=" + this.messageLimit + "&offset=" + this.messageOffset + "&search=" + this.messageSearchValue,
       )
         .then(response => {
           if (response.status === 200) {
@@ -193,6 +201,12 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    handleMessageSearch() {
+      this.messageLimit = 15;
+      this.messageOffset = 0;
+      this.messages = [];
+      this.fetchMessages(this.chatId);
     },
     normalizeMsgDate,
     handleTyping(e) {
@@ -360,10 +374,19 @@ export default {
 
         <div class="is-flex">
           <div class="py-2 px-3">
-            <i class="fas fa-search is-cursor-pointable"></i>
+            <div v-if="showSearchMessageInput" class="messageSearch control has-icons-right">
+              <input type="text" class="input is-small" v-model="messageSearchValue" @input="handleMessageSearch"
+                placeholder="Search messages ..." />
+              <span class="icon is-right">
+                <i class="fa-solid fa-xmark is-clickable has-text-dark"
+                  @click="showSearchMessageInput = !showSearchMessageInput"></i>
+              </span>
+            </div>
+            <i class="is-size-7 fas fa-search is-cursor-pointable is-clickable"
+              @click="showSearchMessageInput = !showSearchMessageInput"></i>
           </div>
           <div class="py-2 px-3">
-            <i class="fa-solid fa-ellipsis-vertical is-cursor-pointable"></i>
+            <i class="is-size-7 fa-solid fa-ellipsis-vertical is-cursor-pointable"></i>
           </div>
         </div>
       </div>
@@ -441,30 +464,28 @@ export default {
       <div class="message-input-container is-flex is-flex-direction-column">
         <form @submit.prevent="handleSendMessage">
 
-          <div class="is-flex">
-            <div class="control emoji-container">
-              <EmojiPicker v-if="showEmojiPicker" class="emoji-picker" :native="true" @select="onSelectEmoji" />
-            </div>
-            <div class="control has-icons-left has-icons-right">
-              <input ref="messageInput" class="input is-medium is-rounded" type="text" spellcheck="false"
-                placeholder="Send message ..." v-model="inputMessageValue" @input="handleTyping" autofocus
-                @focusin="showEmojiPicker = !showEmojiPicker" />
-              <span class="icon is-small is-left">
-                <i class="messageIcon is-clickable far fa-smile is-size-5 is-size-6-mobile"
-                  @click="toggleEmojiPicker"></i>
-              </span>
-              <span class="icon is-small is-right">
-                <i class="messageIcon is-clickable far fa-paper-plane is-size-5 is-size-6-mobile"
-                  @click="handleSendMessage"></i>
-              </span>
+          <div class="control has-icons-left has-icons-right">
+            <input ref="messageInput" class="input is-medium is-rounded" type="text" spellcheck="false"
+              placeholder="Send message ..." v-model="inputMessageValue" @input="handleTyping"
+              style="width: 100% !important;" />
+            <span class="icon is-small is-left">
+              <EmojiPicker v-if="showEmojiPicker" class="emoji-picker is-clickable" :native="true"
+                @select="onSelectEmoji" />
+              <i class="messageIcon is-clickable has-text-dark far fa-smile is-size-5 is-size-6-mobile"
+                @click="toggleEmojiPicker"></i>
+            </span>
+            <span class="icon is-small is-right">
+              <i class="messageIcon far fa-paper-plane is-size-5 is-size-6-mobile"
+                :class="{ 'has-text-light disabled': !inputMessageValue, 'has-text-success is-clickable': inputMessageValue }"
+                @click="handleSendMessage"></i>
+            </span>
 
-              <audio hidden="true" ref="messageAudio">
-                <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
-              </audio>
-              <audio hidden="true" ref="messageReceiveAudio">
-                <source src="../../assets/audio/whatsapp_message_sent.mp3" type="audio/mpeg">
-              </audio>
-            </div>
+            <audio hidden="true" ref="messageAudio">
+              <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
+            </audio>
+            <audio hidden="true" ref="messageReceiveAudio">
+              <source src="../../assets/audio/whatsapp_message_sent.mp3" type="audio/mpeg">
+            </audio>
           </div>
 
         </form>
@@ -495,7 +516,7 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  width: 0px !important;
+  display: none;
 }
 
 @keyframes typingAnimation {
@@ -524,7 +545,8 @@ form {
 
 .emoji-picker {
   position: absolute;
-  bottom: 4em;
+  bottom: 3em;
+  left: 1em;
 }
 
 .messageIcon {
@@ -535,4 +557,12 @@ form {
 .messageIcon:hover {
   cursor: pointer;
   color: none;
-}</style>
+}
+
+.messageSearch {
+  position: absolute !important;
+  right: 2em;
+  top: 3em;
+  z-index: 100;
+}
+</style>

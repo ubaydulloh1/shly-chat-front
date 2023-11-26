@@ -53,6 +53,7 @@ export default {
         })
         .then(data => {
           this.chats = data.results
+
           setTimeout(() => {
             this.isArchiveButtonLoading = false;
           }, 50)
