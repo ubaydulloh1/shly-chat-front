@@ -50,7 +50,7 @@ export default {
         console.log()
       } else return
 
-      this.$refs.messageInput.focus()
+      // this.$refs.messageInput.focus()
       this.inputMessageValue = ''
     },
     handlePrivateChatMessage() {
@@ -283,7 +283,7 @@ export default {
     },
     onSelectEmoji(emoji) {
       this.inputMessageValue = this.inputMessageValue + emoji.i
-      this.$refs.messageInput.focus()
+      // this.$refs.messageInput.focus()
     },
     toggleEmojiPicker() {
       this.showEmojiPicker = !this.showEmojiPicker;
@@ -443,15 +443,21 @@ export default {
 
           <div class="is-flex">
             <div class="control emoji-container">
-              <i class="far fa-smile is-size-5 is-size-6-mobile" @click="toggleEmojiPicker"></i>
               <EmojiPicker v-if="showEmojiPicker" class="emoji-picker" :native="true" @select="onSelectEmoji" />
             </div>
-            <div class="control has-icons-left">
-              <input ref="messageInput" class="input is-medium" type="text" spellcheck="false"
-                placeholder="Send message ..." v-model="inputMessageValue" @input="handleTyping" />
-              <span class="messageIcon icon is-small is-left">
-                <i class="far fa-smile is-size-5 is-size-6-mobile" @click="toggleEmojiPicker"></i>
+            <div class="control has-icons-left has-icons-right">
+              <input ref="messageInput" class="input is-medium is-rounded" type="text" spellcheck="false"
+                placeholder="Send message ..." v-model="inputMessageValue" @input="handleTyping" autofocus
+                @focusin="showEmojiPicker = !showEmojiPicker" />
+              <span class="icon is-small is-left">
+                <i class="messageIcon is-clickable far fa-smile is-size-5 is-size-6-mobile"
+                  @click="toggleEmojiPicker"></i>
               </span>
+              <span class="icon is-small is-right">
+                <i class="messageIcon is-clickable far fa-paper-plane is-size-5 is-size-6-mobile"
+                  @click="handleSendMessage"></i>
+              </span>
+
               <audio hidden="true" ref="messageAudio">
                 <source src="../../assets/audio/notification-sound-7062-pixabay.mp3" type="audio/mpeg">
               </audio>
@@ -459,12 +465,6 @@ export default {
                 <source src="../../assets/audio/whatsapp_message_sent.mp3" type="audio/mpeg">
               </audio>
             </div>
-            <div class="control">
-              <button class="button is-success is-medium" @click="handleSendMessage">
-                <i class="far fa-paper-plane is-size-5 is-size-6-mobile"></i>
-              </button>
-            </div>
-            <!-- </div> -->
           </div>
 
         </form>
@@ -529,10 +529,10 @@ form {
 
 .messageIcon {
   color: dark !important;
-  z-index: 200;
+  pointer-events: all;
 }
 
 .messageIcon:hover {
   cursor: pointer;
-}
-</style>
+  color: none;
+}</style>
