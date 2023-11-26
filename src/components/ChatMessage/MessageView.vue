@@ -52,31 +52,40 @@ export default {
     <MessageMenuView :message="message" v-if="this.iSshowMessageMenu" @closeMenu="closeMenu" @editMessage="editMessage"
       @deleteMessage="deleteMessage" />
 
-    <div class="message my-2 has-text-dark" :class="{
-      'has-background-white-ter': !message.is_own_message,
-      'has-background-primary-light': message.is_own_message
-    }" @contextmenu.prevent="showMessageMenu(message.id)">
-      <p class="p-3 has-text-left">
-        {{ message.content }}
-      </p>
-
-      <div v-if="message.id" class="is-flex is-justify-content-end px-2 pb-2">
-        <span v-if="message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
-        <span class="is-size-7 px-1" v-if="message.is_edited">edited</span>
-        <p class="px-1 is-size-7 has-text-right">{{ normalizeMsgDate(message.created_at) }}</p>
-
-        <p v-if="message.is_own_message" class="px-1">
-          <span v-if="message.is_seen"><i class="fa-solid fa-check-double has-text-success"></i></span>
-          <span v-else><i class="fa-solid fa-check has-text-success"></i></span>
+    <div class="is-flex">
+      <div v-if="chatObj.chat.type === 'GROUP' && !message.is_own_message" class="pr-2">
+        <figure class="image is-32x32">
+          <img class="is-rounded" :src="message.sender.avatar ? message.sender.avatar : 'default_avatar.png'">
+        </figure>
+        <span class="is-size-7 is-italic">{{
+          message.sender.first_name.substring(0, 10) }}</span>
+      </div>
+      <div class="message mb-3 has-text-dark has-text-left" :class="{
+        'has-background-white-ter': !message.is_own_message,
+        'has-background-primary-light': message.is_own_message
+      }" @contextmenu.prevent="showMessageMenu(message.id)">
+        <p class="py-2 px-3 has-text-left">
+          {{ message.content }}
         </p>
 
-      </div>
+        <div v-if="message.id" class="is-flex is-justify-content-end px-2 pb-2">
+          <span v-if="message.is_reacted" class="px-3 pb-3 is-cursor-pointable">👍</span>
+          <span class="is-size-7 px-1" v-if="message.is_edited">edited</span>
+          <p class="px-1 is-size-7 has-text-right">{{ normalizeMsgDate(message.created_at) }}</p>
 
-      <div v-else class="is-flex is-justify-content-end px-2 pb-2">
-        <p class="px-1 is-size-7 has-text-right">{{ normalizeMsgDate(message.created_at) }}</p>
-        <i class="px-1 fa-regular fa-clock is-size-7"></i>
-      </div>
+          <p v-if="message.is_own_message" class="px-1">
+            <span v-if="message.is_seen"><i class="fa-solid fa-check-double has-text-success"></i></span>
+            <span v-else><i class="fa-solid fa-check has-text-success"></i></span>
+          </p>
 
+        </div>
+
+        <div v-else class="is-flex is-justify-content-end px-2 pb-2">
+          <p class="px-1 is-size-7 has-text-right">{{ normalizeMsgDate(message.created_at) }}</p>
+          <i class="px-1 fa-regular fa-clock is-size-7"></i>
+        </div>
+
+      </div>
     </div>
   </div>
 </template>

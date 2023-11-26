@@ -42,11 +42,8 @@ export default {
     handleSendMessage(event) {
       event.preventDefault();
       if (this.inputMessageValue.trim() === '') return;
-      if (this.chatObj.chat.type === "PRIVATE") {
-        this.handlePrivateChatMessage()
-      } else if (this.chatObj.chat.type === "GROUP") {
-        // TODO handle group message
-        console.log()
+      if (this.chatObj.chat.type === "PRIVATE" || this.chatObj.chat.type === "GROUP") {
+        this.handleSocketSendChatMessage()
       } else if (this.chatObj.chat.type === "CHANNEL") {
         // TODO handle channel message
         console.log()
@@ -55,7 +52,7 @@ export default {
       // this.$refs.messageInput.focus()
       this.inputMessageValue = ''
     },
-    handlePrivateChatMessage() {
+    handleSocketSendChatMessage() {
 
       let now = new Date()
       var msg = {
@@ -68,7 +65,7 @@ export default {
 
       const message = {
         EVENT_TYPE: "private_chat_send_message",
-        receiver_id: this.chatObj.chat.user.id,
+        receiver_id: this.chatObj.chat.user ? this.chatObj.chat.user.id : null,
         message_type: "TEXT",
         message_text: this.inputMessageValue
       }
@@ -152,6 +149,11 @@ export default {
           for (let i = 0; i < this.messages.length; i++) {
             if (this.messages[i].id === event_data.message.id) {
               this.messages[i] = event_data.message;
+              if (this.messages[i].sender.id === this.myId) {
+                this.messages[i].is_own_message = true;
+              } else {
+                this.messages[i].is_own_message = false;
+              }
               break;
             }
           }
@@ -375,7 +377,7 @@ export default {
                 normalizeMsgDate(chatObj.chat.user.last_seen_at) }}</p>
             </div>
             <div v-else>
-              <p>312 subscribers</p>
+              <p class="is-size-7">312 members</p>
             </div>
 
           </div>
@@ -401,59 +403,6 @@ export default {
       </div>
     </div>
 
-    <!-- <div v-else-if="chatObj.chat.type == 'GROUP'" class="chat-profile-header is-flex px-3">
-      <div class="is-flex is-justify-content-space-between" style="width: 100%">
-        <div class="is-flex">
-          <figure class="image is-48x48 is-cursor-pointable">
-            <img class="is-rounded" :src="chatObj.chat.image">
-          </figure>
-
-          <div class="has-text-left px-4">
-            <h4 class="is-size-6 is-cursor-pointable">
-              {{ chatObj.chat.name }}
-            </h4>
-            <p class="is-size-7">3219 members</p>
-          </div>
-
-        </div>
-        <div class="is-flex">
-          <div class="py-2 px-3">
-            <i class="fas fa-search is-cursor-pointable"></i>
-          </div>
-          <div class="py-2 px-3">
-            <i class="fa-solid fa-ellipsis-vertical is-cursor-pointable"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-else-if="chatObj.chat.type == 'CHANNEL'" class="chat-profile-header is-flex px-3">
-      <div class="is-flex is-justify-content-space-between" style="width: 100%">
-        <div class="is-flex">
-          <figure class="image is-48x48 is-cursor-pointable">
-            <img class="is-rounded" :src="chatObj.chat.image">
-          </figure>
-
-          <div class="has-text-left px-4">
-            <h4 class="is-size-6 is-cursor-pointable">
-              {{ chatObj.chat.name }}
-            </h4>
-
-            <p class="is-size-7">3219 subscribers</p>
-          </div>
-
-        </div>
-        <div class="is-flex">
-          <div class="py-2 px-3">
-            <i class="fas fa-search is-cursor-pointable"></i>
-          </div>
-          <div class="py-2 px-3">
-            <i class="fa-solid fa-ellipsis-vertical is-cursor-pointable"></i>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
     <div class="chat-container is-flex is-flex-direction-column is-justify-content-space-between">
       <div class="chat-body is-relative">
         <div v-if="isMessageLoading" class="load-more">
@@ -469,7 +418,7 @@ export default {
       <div class="message-input-container is-flex is-flex-direction-column">
         <form @submit.prevent="handleSendMessage">
 
-          <div class="control has-icons-left has-icons-right">
+          <div class="control has-icons-left has-icons-right pb-3">
             <input ref="messageInput" class="input is-medium is-rounded" type="text" spellcheck="false"
               placeholder="Send message ..." v-model="inputMessageValue" @input="handleTyping"
               style="width: 100% !important;" />
@@ -520,9 +469,9 @@ export default {
   overflow-y: scroll;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   display: none;
-}
+} */
 
 @keyframes typingAnimation {
   0% {
