@@ -414,7 +414,7 @@ export default {
         </div>
       </div>
 
-      <div v-if="chatObj.chat.type === 'PRIVATE' && chatObj.chat.type === 'GROUP' || chatObj.chat.type === 'CHANNEL' && chatObj.chat.is_own_channel" class="message-input-container is-flex is-flex-direction-column">
+      <div v-if="chatObj.chat.type === 'PRIVATE' || chatObj.chat.type === 'GROUP' || chatObj.chat.type === 'CHANNEL' && chatObj.chat.is_own_channel" class="message-input-container is-flex is-flex-direction-column">
         <form @submit.prevent="handleSendMessage">
 
           <div class="control has-icons-left has-icons-right pb-3">
