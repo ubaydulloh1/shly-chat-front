@@ -39,7 +39,12 @@ export default {
       console.log("DOUBLE CLICKED!");
     },
     normalizeMsgDate,
-  }
+  },
+  mounted() {
+    if (!this.message.is_own_message && !this.message.is_seen) {
+      this.$emit("seeMessage", this.message.id);
+    }
+  },
 }
 </script>
 

@@ -158,6 +158,14 @@ export default {
           }
         } else if (event_type == "private_chat_message_delete") {
           this.messages = this.messages.filter(message => message.id !== event_data.msg_id)
+        } else if (event_type == "private_chat_see_message") {
+          setTimeout(() => {
+            for (let i = 0; i < this.messages.length; i++) {
+              if (this.messages[i].id === event_data.message.id) {
+                this.messages[i] === event_data.message;
+              }
+            }
+          }, 500)
         }
       } catch {
         console.log("ERROR PARSING WEBSOCKET MESSAGE!")
@@ -289,6 +297,16 @@ export default {
         this.webSocket.send(JSON.stringify(message))
       }
     },
+    seeMessage(msgId) {
+      const message = {
+        EVENT_TYPE: "private_chat_see_message",
+        message_id: msgId,
+      }
+
+      if (this.webSocket.readyState == WebSocket.OPEN) {
+        this.webSocket.send(JSON.stringify(message))
+      }
+    },
     deleteMessage(msgId) {
       const message = {
         EVENT_TYPE: "private_chat_message_delete",
@@ -413,7 +431,7 @@ export default {
 
         <div id="msgLstDiv" class="message-list is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
           <MessageView v-for="(message, index) in messages" :key="index" :message="message" :chatObj="chatObj"
-            @editMessage="editMessage" @deleteMessage="deleteMessage" />
+            @editMessage="editMessage" @deleteMessage="deleteMessage" @seeMessage="seeMessage" />
         </div>
       </div>
 
