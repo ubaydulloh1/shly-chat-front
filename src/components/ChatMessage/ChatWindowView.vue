@@ -186,7 +186,7 @@ export default {
           console.log(error)
         })
     },
-    fetchMessages(chatId) {
+    fetchMessages(chatId, loadMore) {
       axios.get(
         "/chat/" + chatId + "/messages/?limit=" + this.messageLimit + "&offset=" + this.messageOffset + "&search=" + this.messageSearchValue,
       )
@@ -196,7 +196,11 @@ export default {
           }
         })
         .then(data => {
-          this.messages.push(...data.results)
+          if (loadMore) {
+            this.messages.push(...data.results);
+          } else {
+            this.messages = data.results;
+          }
           this.allMessageCount = data.count
         })
         .catch(error => {
@@ -206,8 +210,7 @@ export default {
     handleMessageSearch() {
       this.messageLimit = 15;
       this.messageOffset = 0;
-      this.messages = [];
-      this.fetchMessages(this.chatId);
+      this.fetchMessages(this.chatId, false);
     },
     normalizeMsgDate,
     handleTyping(e) {
@@ -259,7 +262,7 @@ export default {
 
         this.isMessageLoading = true
         setTimeout(() => {
-          this.fetchMessages(this.chatId)
+          this.fetchMessages(this.chatId, true)
           this.isMessageLoading = false
           this.isFetchingMessages = false
         }, 1000)
@@ -310,7 +313,7 @@ export default {
       this.messageOffset = 0
       this.allMessageCount = 0
       this.messages = []
-      this.fetchMessages(this.chatId)
+      this.fetchMessages(this.chatId, false)
       this.closeOldConnection(oldId)
       this.isInterlocutorOnline = false
       this.isInterlocutorTyping = false
@@ -320,7 +323,7 @@ export default {
   },
   mounted() {
     this.fetchChat(this.chatId)
-    this.fetchMessages(this.chatId)
+    this.fetchMessages(this.chatId, true)
     this.createWebsocketConnection(this.chatId)
 
     setTimeout(() => {
@@ -414,7 +417,9 @@ export default {
         </div>
       </div>
 
-      <div v-if="chatObj.chat.type === 'PRIVATE' || chatObj.chat.type === 'GROUP' || chatObj.chat.type === 'CHANNEL' && chatObj.chat.is_own_channel" class="message-input-container is-flex is-flex-direction-column">
+      <div
+        v-if="chatObj.chat.type === 'PRIVATE' || chatObj.chat.type === 'GROUP' || chatObj.chat.type === 'CHANNEL' && chatObj.chat.is_own_channel"
+        class="message-input-container is-flex is-flex-direction-column">
         <form @submit.prevent="handleSendMessage">
 
           <div class="control has-icons-left has-icons-right pb-3">

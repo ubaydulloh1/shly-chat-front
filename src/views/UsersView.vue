@@ -7,20 +7,38 @@ export default {
     data() {
         return {
             users: [],
-            limit: 100,
-            offset: 0
+            allUserCount: null,
+            limit: 15,
+            offset: 0,
+            isUserLoading: false,
+            searchValue: '',
         }
     },
     methods: {
-        fetchUsers() {
-            axios.get("/accounts/list/?limit=" + this.limit + "&offset=" + this.offset)
+        fetchUsers(loadMore) {
+            axios.get(
+                "/accounts/list/",
+                {
+                    params: {
+                        limit: this.limit,
+                        offset: this.offset,
+                        search: this.searchValue
+                    }
+                }
+            )
                 .then(response => {
                     if (response.status == 200) {
                         return response.data
                     }
                 })
                 .then(data => {
-                    this.users = data.results
+                    if (loadMore) {
+                        this.users.push(...data.results);
+                    } else {
+                        this.users = data.results;
+                    }
+                    this.allUserCount = data.count;
+                    this.isUserLoading = false;
                 })
                 .catch(error => {
                     console.log(error)
@@ -29,7 +47,25 @@ export default {
         openUserProfile(userId) {
             this.$emit("openProfile", userId)
         },
-        normalizeMsgDate
+        searchUsers() {
+            this.offset = 0;
+            this.fetchUsers(false);
+        },
+        loadMoreUsers() {
+            let scrlTop = document.documentElement.scrollTop;
+            let wndwInnerHeight = window.innerHeight;
+            let userContainerHeight = this.$refs.usersContainerRef.offsetHeight
+
+            if (scrlTop + wndwInnerHeight > userContainerHeight) {
+                if (!this.isUserLoading && this.offset < this.allUserCount) {
+                    this.isUserLoading = true;
+                    this.offset += this.limit;
+                    this.fetchUsers(true);
+                }
+            }
+        },
+
+        normalizeMsgDate,
     },
     created() {
         const access = this.$store.state.access
@@ -38,15 +74,24 @@ export default {
             this.$router.push("/login")
         }
     },
+    beforeMount() {
+        this.fetchUsers(true);
+    },
     mounted() {
-        this.fetchUsers()
+        window.onscroll = this.loadMoreUsers;
     },
 }
 </script>
 
 <template>
-    <div class="container not-found py-6 px-4">
-        <div class="columns is-multiline">
+    <div class="users p-2">
+        <div class="block">
+            <div class="control">
+                <input class="input" type="text" placeholder="Search users ..." v-model="searchValue"
+                    @input="searchUsers" />
+            </div>
+        </div>
+        <div class="columns is-multiline" ref="usersContainerRef">
 
             <div v-for="user in users" :key="user.id" class="column is-3-desktop is-6-tablet is-12-mobile">
                 <div class="card is-inline-block is-cursor-pointable" @click="openUserProfile(user.id)">
@@ -78,3 +123,9 @@ export default {
 
     </div>
 </template>
+
+<style scoped>
+.users {
+    margin-top: 54px;
+}
+</style>
