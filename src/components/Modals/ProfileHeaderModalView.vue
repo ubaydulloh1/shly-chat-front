@@ -32,15 +32,14 @@ export default {
                     <span class="pr-2">
                         <i class="fa-regular fa-user is-size-6"></i>
                     </span>
-                    <li class="" @click="openAccountView">Profile information</li>
+
+                    <router-link :to="{ name: 'EditProfile' }" @click="closeModal">
+                        <!-- <li class="" @click="openAccountView">Profile</li> -->
+                        <li>Profile</li>
+                    </router-link>
+
                 </div>
 
-                <div class="is-flex py-2 px-5 is-cursor-pointable">
-                    <span class="pr-2">
-                        <i class="fa-solid fa-arrows-spin is-size-6"></i>
-                    </span>
-                    <li class="" @click="changePassword">Change password</li>
-                </div>
                 <div class="is-flex has-text-danger py-2 px-5 is-cursor-pointable" @click="logout">
                     <span class="pr-2">
                         <i class="fa-solid fa-right-from-bracket is-size-6"></i>

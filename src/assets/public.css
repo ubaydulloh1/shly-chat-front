@@ -22,8 +22,8 @@ body {
 .home,
 .login,
 .register {
+  top: 52px;
   position: fixed !important;
-  top: 52px !important;
   width: 100% !important;
   height: calc(100dvh - 52px) !important;
 }
