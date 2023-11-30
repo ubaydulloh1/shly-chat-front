@@ -15,8 +15,8 @@ export default {
 </script>
 
 <template>
-    <div class="account">
-        <div class="is-flex-desktop is-justify-content-center">
+    <div class="account is-flex is-justify-content-center">
+        <div class="account-container is-flex-desktop is-justify-content-center">
             <div class="account-sidebar">
                 <router-link :to="{ name: 'EditProfile' }">
                     <div class="box is-shadowless is-clickable m-0">
@@ -46,6 +46,10 @@ export default {
 .account {
     margin-top: 52px;
     width: 100% !important;
+}
+
+.account .account-container {
+    width: 100%;
 }
 
 .account-sidebar a.router-link-exact-active .box {
@@ -81,6 +85,10 @@ export default {
 
     .account-sidebar {
         width: 30%;
+    }
+
+    .account .account-container {
+        max-width: 1000px;
     }
 
 }

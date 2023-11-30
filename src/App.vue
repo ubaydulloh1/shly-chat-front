@@ -106,16 +106,16 @@ export default {
       class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between py-0">
       <div class="navbar-start is-flex">
         <a class="navbar-item">
-          <router-link to="/">Home</router-link>
+          <router-link class="nvbr-link" to="/">Home</router-link>
         </a>
         <a class="navbar-item">
-          <router-link to="/users">Explore</router-link>
+          <router-link class="nvbr-link" to="/users">Explore</router-link>
         </a>
       </div>
 
       <div class="navbar-end is-flex-mobile" v-if="!isUserLogged">
         <div class="navbar-item">
-          <router-link to="/login/">Sign in</router-link>
+          <router-link class="nvbr-link" to="/login/">Sign in</router-link>
         </div>
       </div>
 
@@ -168,7 +168,7 @@ nav a {
   color: #2c3e50;
 }
 
-nav a.router-link-exact-active {
+nav a.router-link-exact-active.nvbr-link {
   color: #42b983;
 }
 

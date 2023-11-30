@@ -33,7 +33,7 @@ export default {
                         <i class="fa-regular fa-user is-size-6"></i>
                     </span>
 
-                    <router-link :to="{ name: 'EditProfile' }" @click="closeModal">
+                    <router-link :to="{ name: 'EditProfile' }" @click="closeModal" class="has-text-weight-medium">
                         <!-- <li class="" @click="openAccountView">Profile</li> -->
                         <li>Profile</li>
                     </router-link>
