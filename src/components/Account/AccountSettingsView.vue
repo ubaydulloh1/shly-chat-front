@@ -1,5 +1,5 @@
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 
 export default {
     name: "AccountSettings",
@@ -17,39 +17,35 @@ export default {
         }
     },
     methods: {
-        // fetchAccountSettings() {
-        //     // if (this.isUserLogged) {
-        //     axios.get("/accounts/me/")
-        //         .then(response => {
-        //             if (response.status == 200) {
-        //                 return response.data
-        //             }
-        //         })
-        //             .then(data => {
-        //                 this.userAccountSettings.id = data.id;
-        //                 this.userAccountSettings.showLastSeen = data.account_settings.show_last_seen;
-        //                 this.userAccountSettings.showReadReceipts = data.account_settings.show_read_receipts;
-        //                 this.userAccountSettings.allowGroupAdds = data.account_settings.allow_to_add_groups;
-        //                 this.userAccountSettings.allowPrivateMessagesToAll = data.account_settings.allow_private_messages_to_non_contacts;
-        //                 this.userAccountSettings.pushNotifications = data.account_settings.push_notifications_enabled;
+        fetchAccountSettings() {
+            axios.get("/accounts/me/")
+                .then(response => {
+                    if (response.status == 200) {
+                        return response.data
+                    }
+                })
+                .then(data => {
 
-        //                 setTimeout(() => {
-        //                     this.isAccountDataLoading = false;
-        //                 }, 100)
-        //             })
-        //             .catch(error => {
-        //                 console.log(error)
-        //                 this.$router.push("/login")
-        //             })
-        //     // }
-        // }
+                    this.userAccountSettings.id = data.id;
+                    this.userAccountSettings.showLastSeen = data.account_settings.show_last_seen;
+                    this.userAccountSettings.showReadReceipts = data.account_settings.show_read_receipts;
+                    this.userAccountSettings.allowGroupAdds = data.account_settings.allow_to_add_groups;
+                    this.userAccountSettings.allowPrivateMessagesToAll = data.account_settings.allow_private_messages_to_non_contacts;
+                    this.userAccountSettings.pushNotifications = data.account_settings.push_notifications_enabled;
+                    setTimeout(() => {
+                        this.isAccountDataLoading = false;
+                    }, 100)
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.$router.push("/login")
+                })
+        }
     },
-    // beforeMount() {
-    //     // this.isAccountDataLoading = true;
-    //     // setTimeout(() => {
-    //     //     this.fetchAccountSettings();
-    //     // }, 1000) 
-    // }
+    beforeMount() {
+        this.isAccountDataLoading = true;
+        this.fetchAccountSettings();
+    }
 }
 </script>
 
@@ -61,35 +57,35 @@ export default {
             <div class="control py-1">
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Show last seen</h3>
-                    <input class="checkbox" type="checkbox" v-model="showLastSeen">
+                    <input class="checkbox" type="checkbox" v-model="userAccountSettings.showLastSeen">
                 </div>
             </div>
 
             <div class="control py-1">
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Show Read Receipts</h3>
-                    <input class="checkbox" type="checkbox" v-model="showReadReceipts">
+                    <input class="checkbox" type="checkbox" v-model="userAccountSettings.showReadReceipts">
                 </div>
             </div>
 
             <div class="control py-1">
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Allow to Add Groups</h3>
-                    <input class="checkbox" type="checkbox" v-model="allowGroupAdds">
+                    <input class="checkbox" type="checkbox" v-model="userAccountSettings.allowGroupAdds">
                 </div>
             </div>
 
             <div class="control py-1">
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Allow Private Messages to all</h3>
-                    <input class="checkbox" type="checkbox" v-model="allowPrivateMessagesToAll">
+                    <input class="checkbox" type="checkbox" v-model="userAccountSettings.allowPrivateMessagesToAll">
                 </div>
             </div>
 
             <div class="control py-1">
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Push Notifications Enabled</h3>
-                    <input class="checkbox" type="checkbox" v-model="pushNotifications">
+                    <input class="checkbox" type="checkbox" v-model="userAccountSettings.pushNotifications">
                 </div>
             </div>
             <div class="control py-5">

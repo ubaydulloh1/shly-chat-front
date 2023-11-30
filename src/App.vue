@@ -3,6 +3,7 @@ import axios from 'axios'
 import ProfileHeaderModalView from '@/components/Modals/ProfileHeaderModalView.vue'
 import ProfileView from '@/components/User/ProfileView.vue'
 import AccountModalView from './components/Modals/AccountModalView.vue'
+import GroupOrChannelCreateView from "@/components/Modals/GroupOrChannelCreateView.vue"
 
 export default {
   name: "App",
@@ -10,6 +11,7 @@ export default {
     AccountModalView,
     ProfileHeaderModalView,
     ProfileView,
+    GroupOrChannelCreateView
   },
   data() {
     return {
@@ -24,6 +26,8 @@ export default {
       isUserProfileOpen: false,
       openProfileUserId: null,
       isUserAccountViewOpen: false,
+      isAddGroupModalOpen: false,
+      isAddChannelModalOpen: false,
     }
   },
   methods: {
@@ -73,7 +77,14 @@ export default {
     },
     toggleAccountView() {
       this.isUserAccountViewOpen = !this.isUserAccountViewOpen;
-    }
+    },
+    toggleGroupAddModal() {
+      this.isAddGroupModalOpen = !this.isAddGroupModalOpen;
+    },
+    toggleChannelAddModal() {
+      this.isAddChannelModalOpen = !this.isAddChannelModalOpen;
+    },
+
   },
   beforeCreate() {
     this.$store.commit("initializeStore")
@@ -127,7 +138,8 @@ export default {
 
           <ProfileHeaderModalView v-if="showProfileHeaderModal" :showProfileHeaderModal="showProfileHeaderModal"
             @closeProfileHeaderModal="toggleProfileHeader" @logoutClick="handleLogout"
-            @openAccountView="toggleAccountView" />
+            @openAccountView="toggleAccountView" @openGroupAddModal="toggleGroupAddModal"
+            @openChannelAddModal="toggleChannelAddModal" />
 
         </div>
       </div>
@@ -137,6 +149,11 @@ export default {
   <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile" :user-id="openProfileUserId"
     @chatSelected="chatSelected" />
   <AccountModalView v-if="isUserAccountViewOpen" @close="toggleAccountView" />
+
+  <GroupOrChannelCreateView v-if="isAddGroupModalOpen" title="Add Group" chat_type="GROUP"
+    @close="isAddGroupModalOpen = !isAddGroupModalOpen" />
+  <GroupOrChannelCreateView v-if="isAddChannelModalOpen" title="Add Channel" chat_type="CHANNEL"
+    @close="isAddChannelModalOpen = !isAddChannelModalOpen" />
 
   <router-view class="router-view" ref="routerViewRef" :myId="userProfile.id" @loggedIn="handleLoggedIn"
     @openProfile="showUserProfile" />

@@ -4,7 +4,7 @@ export default {
     props: [
         "showProfileHeaderModal"
     ],
-    data() { },
+    // data() { },
     methods: {
         closeModal() {
             this.$emit("closeProfileHeaderModal")
@@ -19,7 +19,7 @@ export default {
         },
         openAccountView() {
             this.$emit("openAccountView")
-        }
+        },
     }
 }
 </script>
@@ -38,6 +38,20 @@ export default {
                         <li>Profile</li>
                     </router-link>
 
+                </div>
+
+                <div class="is-flex py-2 px-5 is-cursor-pointable">
+                    <span class="pr-2">
+                        <i class="fa-solid fa-user-group is-size-6"></i>
+                    </span>
+                    <li class="" @click="$emit('openGroupAddModal'), closeModal()">Add group</li>
+                </div>
+
+                <div class="is-flex py-2 px-5 is-cursor-pointable">
+                    <span class="pr-2">
+                        <i class="fa-solid fa-bullhorn is-size-6"></i>
+                    </span>
+                    <li class="" @click="$emit('openChannelAddModal'), closeModal()">Add channel</li>
                 </div>
 
                 <div class="is-flex has-text-danger py-2 px-5 is-cursor-pointable" @click="logout">
