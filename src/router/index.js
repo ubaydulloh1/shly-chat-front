@@ -4,6 +4,7 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import UsersView from '@/views/UsersView.vue'
+// import ChatWindowView from '@/components/ChatMessage/ChatWindowView.vue'
 import AccountView from '@/views/AccountView.vue'
 import EditProfileView from '@/components/Account/EditProfileView.vue'
 import AccountSettingsView from '@/components/Account/AccountSettingsView.vue'
@@ -14,8 +15,16 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    // children: [
+    //   {
+    //     path: '/chat/:id/',
+    //     name: 'chatWindow',
+    //     component: ChatWindowView
+    //   },
+    // ]
   },
+
   {
     path: '/about/',
     name: 'about',

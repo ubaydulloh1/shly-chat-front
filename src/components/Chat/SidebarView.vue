@@ -13,6 +13,7 @@ export default {
       searchInput: '',
       chatLimit: 15,
       chatOffset: 0,
+      allChatsCount: 0,
       chats: [],
     }
   },
@@ -23,6 +24,7 @@ export default {
   methods: {
     toggleArchived() {
       this.isArchivedOpen = !this.isArchivedOpen;
+      this.chatOffset = 0;
       this.fetchChats();
     },
     handleChatSearch() {
@@ -32,7 +34,9 @@ export default {
       this.selectedChatId = chatId
       this.$emit("selectedChat", chatId)
     },
-    fetchChats() {
+    fetchChats(loadMore = false) {
+
+      console.log(this.limit)
       this.isArchiveButtonLoading = true;
 
       axios.get(
@@ -52,7 +56,12 @@ export default {
           }
         })
         .then(data => {
-          this.chats = data.results
+          if (loadMore) {
+            this.chats.push(...data.results)
+          } else {
+            this.chats = data.results
+            this.allChatsCount = data.count;
+          }
 
           setTimeout(() => {
             this.isArchiveButtonLoading = false;
@@ -62,6 +71,22 @@ export default {
           console.log("ERROR: ", error)
         })
 
+    },
+    handleChatListScroll(e) {
+
+      let scrollTop = e.target.scrollTop;
+      let clientHeight = e.target.clientHeight;
+      let scrollHeight = e.target.scrollHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight) {
+
+        if (this.chatOffset >= this.allChatsCount) {
+          return
+        }
+
+        this.chatOffset = this.chatOffset + this.chatLimit;
+        this.fetchChats(true);
+      }
     },
   },
   mounted() {
@@ -84,7 +109,7 @@ export default {
     </div>
 
     <div class="chats-container">
-      <div id="chat-list">
+      <div id="chat-list" ref="chatListContainer" @scroll="handleChatListScroll">
         <button class="archive-button button is-medium is-danger" :class="{ 'is-loading': isArchiveButtonLoading }"
           @click="toggleArchived" v-if="isArchivedOpen">
           <p class="is-size-7">close</p>

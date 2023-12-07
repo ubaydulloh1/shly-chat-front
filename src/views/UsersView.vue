@@ -15,7 +15,7 @@ export default {
         }
     },
     methods: {
-        fetchUsers(loadMore) {
+        fetchUsers(loadMore = false) {
             axios.get(
                 "/accounts/list/",
                 {
@@ -54,7 +54,11 @@ export default {
         loadMoreUsers() {
             let scrlTop = document.documentElement.scrollTop;
             let wndwInnerHeight = window.innerHeight;
-            let userContainerHeight = this.$refs.usersContainerRef.offsetHeight
+
+            let userContainerHeight = null
+            if (this.$refs.usersContainerRef) {
+                userContainerHeight = this.$refs.usersContainerRef.offsetHeight
+            }
 
             if (scrlTop + wndwInnerHeight > userContainerHeight) {
                 if (!this.isUserLoading && this.offset < this.allUserCount) {
@@ -91,7 +95,7 @@ export default {
                     @input="searchUsers" />
             </div>
         </div>
-        <div class="columns is-multiline" ref="usersContainerRef">
+        <div class="columns is-multiline" ref="usersContainerRef" @scroll="loadMoreUsers">
 
             <div v-for="user in users" :key="user.id" class="column is-3-desktop is-6-tablet is-12-mobile">
                 <div class="card is-inline-block is-cursor-pointable" @click="openUserProfile(user.id)">
