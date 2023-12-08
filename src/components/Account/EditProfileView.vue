@@ -13,14 +13,13 @@ export default {
                 avatar: null,
                 firstName: '',
                 lastName: '',
-                middleName: '',
             },
+            tempAvatarInputFile: null,
             isAccountDataLoading: false,
         }
     },
     methods: {
         fetchAccount() {
-            // if (this.isUserLogged) {
             axios.get("/accounts/me/")
                 .then(response => {
                     if (response.status == 200) {
@@ -30,11 +29,10 @@ export default {
                 .then(data => {
                     this.userAccount.id = data.id;
                     this.userAccount.username = data.username;
-                    this.userAccount.avatar = data.avatar ? data.avatar : this.userProfile.avatar;
+                    this.userAccount.avatar = data.avatar ? data.avatar : this.userAccount.avatar;
                     this.userAccount.email = data.email;
                     this.userAccount.firstName = data.first_name;
                     this.userAccount.lastName = data.last_name;
-                    this.userAccount.middleName = data.middle_name;
 
                     setTimeout(() => {
                         this.isAccountDataLoading = false;
@@ -44,7 +42,40 @@ export default {
                     console.log(error)
                     this.$router.push("/login")
                 })
-            // }
+        },
+        onAvatarChange(event) {
+            this.tempAvatarInputFile = event.target.files[0];
+        },
+        updateAccount() {
+            let formData = new FormData();
+            formData.append("first_name", this.userAccount.firstName)
+            formData.append("last_name", this.userAccount.lastName)
+
+            if (this.tempAvatarInputFile) {
+                formData.append("avatar", this.tempAvatarInputFile)
+            }
+
+            this.isAccountDataLoading = true
+            axios.patch(
+                "/accounts/me/",
+                formData,
+                {
+                    "headers": {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            ).then(resp => {
+                if (resp.status == 200) {
+                    return resp.data
+                }
+            }).then(data => {
+                this.userAccount.firstName = data.first_name
+                this.userAccount.lastName = data.last_name
+                this.userAccount.avatar = data.avatar
+                this.isAccountDataLoading = false
+            }).catch(err => {
+                console.log(err)
+            })
         }
     },
     beforeMount() {
@@ -57,7 +88,7 @@ export default {
 <template>
     <div class="account-body">
         <h1 class="is-size-5 has-text-left p-5">Edit Profile</h1>
-        <form class="form">
+        <form class="form" @submit.prevent="updateAccount">
             <div class="control pt-1 pb-5">
                 <div class="is-flex-desktop" style="width: 100%;">
                     <div class="avatar-block is-flex px-5 py-1">
@@ -67,17 +98,20 @@ export default {
                     </div>
                     <div class="avatar-upload file has-name is-success">
                         <label class="file-label">
-                            <input class="file-input" type="file" name="resume">
+                            <input class="file-input" type="file" name="resume" accept="image/*" @change="onAvatarChange">
                             <span class="file-cta">
                                 <span class="file-icon">
                                     <i class="fas fa-upload"></i>
                                 </span>
                                 <span class="file-label">
-                                    Choose a file…
+                                    Choose avatar
                                 </span>
                             </span>
-                            <span class="file-name">
-                                Screen Shot 2017-07-29 at 15.54.25.png
+                            <span v-if="tempAvatarInputFile" class="file-name">
+                                {{ tempAvatarInputFile.name }}
+                            </span>
+                            <span v-else class="file-name">
+                                No file chosen
                             </span>
                         </label>
                     </div>
@@ -87,13 +121,13 @@ export default {
             <div class="control py-1">
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Username</h3>
-                    <input class="input" type="text" placeholder="Username" v-model="userAccount.username" />
+                    <input class="input" type="text" placeholder="Username" v-model="userAccount.username" disabled />
                 </div>
             </div>
             <div class="control py-1">
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Email</h3>
-                    <input class="input" type="email" placeholder="mail@example.com" v-model="userAccount.email" />
+                    <input class="input" type="email" placeholder="mail@example.com" v-model="userAccount.email" disabled />
                 </div>
             </div>
             <div class="control py-1">
@@ -106,12 +140,6 @@ export default {
                 <div class="is-flex-desktop">
                     <h3 class="has-text-right has-text-weight-bold px-3">Last name</h3>
                     <input class="input" type="text" placeholder="Last name" v-model="userAccount.lastName" />
-                </div>
-            </div>
-            <div class="control py-1">
-                <div class="is-flex-desktop">
-                    <h3 class="has-text-right has-text-weight-bold px-3">Middle name</h3>
-                    <input class="input" type="text" placeholder="Middle name" v-model="userAccount.middleName" />
                 </div>
             </div>
 

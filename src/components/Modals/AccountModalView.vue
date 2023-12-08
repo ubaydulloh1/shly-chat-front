@@ -32,7 +32,6 @@ export default {
             setTimeout(() => {
                 this.isSaveLoading = false;
             }, 500)
-            console.log("FORM SUBMITTED!")
         },
         fetchMe() {
             axios.get("/accounts/me/")
@@ -42,7 +41,6 @@ export default {
                     }
                 })
                 .then(data => {
-                    console.log(data)
                     this.userAccount.id = data.id
                     this.userAccount.username = data.username
                     this.userAccount.avatar = data.avatar

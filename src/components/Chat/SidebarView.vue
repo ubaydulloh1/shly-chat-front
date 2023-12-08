@@ -36,7 +36,6 @@ export default {
     },
     fetchChats(loadMore = false) {
 
-      console.log(this.limit)
       this.isArchiveButtonLoading = true;
 
       axios.get(

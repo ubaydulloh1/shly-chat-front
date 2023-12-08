@@ -1,7 +1,7 @@
 <script>
 export default {
     name: "ResetPasswordView",
-    data(){
+    data() {
         return {
             autocompleteValue: "off",
             showPassword: false,
@@ -12,9 +12,8 @@ export default {
         }
     },
     methods: {
-        handleLoginSubmit(e){
+        handleLoginSubmit(e) {
             console.log(e)
-            console.log(this.user)
         }
     }
 }
@@ -26,5 +25,4 @@ export default {
     </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
