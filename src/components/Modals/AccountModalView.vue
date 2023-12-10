@@ -78,7 +78,7 @@ export default {
                         <div class="px-3 py-1">
                             <figure class="account-photo image is-64x64">
                                 <img v-if="userAccount.avatar" class="is-rounded" :src="userAccount.avatar">
-                                <img v-else class="is-rounded" src="../../assets/images/default_avatar.png">
+                                <img v-else class="is-rounded" src="/default_avatar.png">
                             </figure>
                         </div>
                     </div>

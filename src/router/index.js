@@ -1,28 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
+import HomePageView from '../pages/HomePageView.vue'
+import LoginPageView from '@/pages/LoginPageView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import UsersView from '@/views/UsersView.vue'
-// import ChatWindowView from '@/components/ChatMessage/ChatWindowView.vue'
+import ChatWindowView from '@/components/ChatMessage/ChatWindowView.vue'
 import AccountView from '@/views/AccountView.vue'
 import EditProfileView from '@/components/Account/EditProfileView.vue'
 import AccountSettingsView from '@/components/Account/AccountSettingsView.vue'
 import AccountChangePasswordView from '@/components/Account/AccountChangePasswordView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import NoChatSelectedView from '@/components/ChatMessage/NoChatSelectedView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
-    // children: [
-    //   {
-    //     path: '/chat/:id/',
-    //     name: 'chatWindow',
-    //     component: ChatWindowView
-    //   },
-    // ]
+    component: HomePageView,
+    children: [
+      {
+        path: '/',
+        name: 'NoChatSelected',
+        component: NoChatSelectedView,
+        router: 'chatWindow'
+      },
+      {
+        path: '/chat/:id/',
+        name: 'chatWindow',
+        component: ChatWindowView,
+        router: 'chatWindow'
+      },
+    ]
   },
 
   {
@@ -33,7 +41,7 @@ const routes = [
   {
     path: "/login/",
     name: "Login",
-    component: LoginView
+    component: LoginPageView
   },
   {
     path: "/account/",

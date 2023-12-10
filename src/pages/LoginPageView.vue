@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 export default {
-    name: "LoginView",
+    name: "LoginPageView",
     data() {
         return {
             autocompleteValue: "off",

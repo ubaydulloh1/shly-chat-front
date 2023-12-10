@@ -1,43 +1,24 @@
 <script>
 import SidebarView from '@/components/Chat/SidebarView.vue'
-import ChatWindowView from '@/components/ChatMessage/ChatWindowView.vue'
 
 export default {
-  name: 'HomeView',
+  name: 'HomePageView',
   components: {
     SidebarView,
-    ChatWindowView,
   },
   props: ["myId"],
   data() {
     return {
       isMobile: false,
-      isChatSelected: false,
-      selectedChatId: null
     }
   },
   methods: {
-    chatSelected(chatId) {
-      this.selectedChatId = chatId
-      this.isChatSelected = true
-      this.$store.commit("setSelectedChatId", chatId)
-    },
-    backToChats() {
-      this.isChatSelected = false
-      this.selectedChatId = null
-      this.$store.commit("removeSelectedChatId")
-    },
     updateIsMobile() {
       this.isMobile = window.innerWidth <= 768
     },
   },
   created() {
-    const selectedChatId = this.$store.state.selectedChatId
     this.isMobile = window.innerWidth <= 768
-    if (selectedChatId) {
-      this.isChatSelected = true
-      this.selectedChatId = selectedChatId
-    }
     window.addEventListener("resize", this.updateIsMobile)
   },
   beforeMount() {
@@ -54,19 +35,12 @@ export default {
 
 <template>
   <div class="home is-flex-tablet" ref="homeRef">
-    <div v-if="!isChatSelected | !isMobile" class="chat-sidebar">
-      <SidebarView @selectedChat="chatSelected" :myId="myId" />
+    <div v-if="!isMobile || !$route.params.id" class="chat-sidebar">
+      <SidebarView :myId="myId" />
     </div>
 
-    <div class="chat-window" v-if="isChatSelected">
-      <ChatWindowView :chatId="selectedChatId" :myId="myId" @backToChats="backToChats"
-        @openProfile="(userId) => { this.$emit('openProfile', userId) }" />
-    </div>
-
-    <div class="chat-window" v-else-if="!isChatSelected && !isMobile">
-      <dev class="">
-        <p>Please select chat to message.</p>
-      </dev>
+    <div class="chat-window">
+      <router-view class="chatWindow"></router-view>
     </div>
 
   </div>
@@ -100,6 +74,7 @@ export default {
   .home .chat-sidebar {
     width: 30% !important;
   }
+
   .home .chat-window {
     width: 70% !important;
   }
@@ -115,6 +90,7 @@ export default {
   .home .chat-sidebar {
     width: 25% !important;
   }
+
   .home .chat-window {
     width: 70% !important;
   }

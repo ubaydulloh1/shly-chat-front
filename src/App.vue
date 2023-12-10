@@ -1,16 +1,16 @@
 <script>
 import axios from 'axios'
-import ProfileHeaderModalView from '@/components/Modals/ProfileHeaderModalView.vue'
-import ProfileView from '@/components/User/ProfileView.vue'
+import NavbarView from '@/components/Navbar/NavbarView.vue'
+import ProfileModalView from '@/components/User/ProfileModalView.vue'
 import AccountModalView from './components/Modals/AccountModalView.vue'
 import GroupOrChannelCreateView from "@/components/Modals/GroupOrChannelCreateView.vue"
 
 export default {
   name: "App",
   components: {
+    NavbarView,
     AccountModalView,
-    ProfileHeaderModalView,
-    ProfileView,
+    ProfileModalView,
     GroupOrChannelCreateView
   },
   data() {
@@ -35,14 +35,6 @@ export default {
       this.isUserLogged = true
       this.fetchMe()
     },
-    handleLogout() {
-      this.$store.commit("cleanStorage")
-      this.isUserLogged = false
-      this.$router.push("/login")
-    },
-    toggleProfileHeader() {
-      this.showProfileHeaderModal = !this.showProfileHeaderModal
-    },
     fetchMe() {
       if (this.isUserLogged) {
         axios.get("/accounts/me/")
@@ -55,6 +47,8 @@ export default {
             this.userProfile.id = data.id
             this.userProfile.username = data.username
             this.userProfile.avatar = data.avatar ? data.avatar : this.userProfile.avatar
+
+            this.$store.commit("setUserInfo", this.userProfile);
           })
           .catch(error => {
             console.log(error)
@@ -111,43 +105,10 @@ export default {
 
 
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <NavbarView :isUserLogged="isUserLogged" :showProfileHeaderModal="showProfileHeaderModal" :userProfile="userProfile" />
 
-    <div id="navbarBasicExample"
-      class="navbar-menu is-active is-flex-mobile is-flex-tablet is-justify-content-space-between py-0">
-      <div class="navbar-start is-flex">
-        <a class="navbar-item">
-          <router-link class="nvbr-link" to="/">Home</router-link>
-        </a>
-        <a class="navbar-item">
-          <router-link class="nvbr-link" to="/users">Explore</router-link>
-        </a>
-      </div>
+  <ProfileModalView v-if="$store.state.isUserProfileOpen" />
 
-      <div class="navbar-end is-flex-mobile" v-if="!isUserLogged">
-        <div class="navbar-item">
-          <router-link class="nvbr-link" to="/login/">Sign in</router-link>
-        </div>
-      </div>
-
-      <div class="navbar-end is-flex" v-else>
-        <div class="is-flex py-2 px-5">
-          <figure class="image is-32x32 is-cursor-pointable" @click="toggleProfileHeader">
-            <img class="is-rounded" :src="userProfile.avatar">
-          </figure>
-
-          <ProfileHeaderModalView v-if="showProfileHeaderModal" :showProfileHeaderModal="showProfileHeaderModal"
-            @closeProfileHeaderModal="toggleProfileHeader" @logoutClick="handleLogout"
-            @openAccountView="toggleAccountView" @openGroupAddModal="toggleGroupAddModal"
-            @openChannelAddModal="toggleChannelAddModal" />
-
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <ProfileView v-if="isUserProfileOpen" @close="closeUserProfile" :user-id="openProfileUserId"
-    @chatSelected="chatSelected" />
   <AccountModalView v-if="isUserAccountViewOpen" @close="toggleAccountView" />
 
   <GroupOrChannelCreateView v-if="isAddGroupModalOpen" title="Add Group" chat_type="GROUP"
@@ -155,8 +116,7 @@ export default {
   <GroupOrChannelCreateView v-if="isAddChannelModalOpen" title="Add Channel" chat_type="CHANNEL"
     @close="isAddChannelModalOpen = !isAddChannelModalOpen" />
 
-  <router-view class="router-view" ref="routerViewRef" :myId="userProfile.id" @loggedIn="handleLoggedIn"
-    @openProfile="showUserProfile" />
+  <router-view class="router-view" :myId="userProfile.id" @loggedIn="handleLoggedIn" @openProfile="showUserProfile" />
 </template>
 
 

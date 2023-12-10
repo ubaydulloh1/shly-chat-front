@@ -3,7 +3,7 @@ import axios from 'axios'
 import { normalizeMsgDate } from '@/utils'
 
 export default {
-    name: "ProfileView",
+    name: "ProfileModalView",
     data() {
         return {
             user: Object,
@@ -11,10 +11,9 @@ export default {
             error: ''
         }
     },
-    props: ["userId"],
+    props: [],
     methods: {
         startPrivateChat(userId) {
-            console.log("SEND MESSAGE WORKED! ", userId)
             const formData = {
                 type: "PRIVATE",
                 user: userId
@@ -29,7 +28,8 @@ export default {
                     }
                 })
                 .then(data => {
-                    this.$emit("chatSelected", data.id)
+                    this.$store.commit("toggleUserProfile");
+                    this.$router.push({ "name": "chatWindow", "params": { "id": data.id } });
                 })
                 .catch(error => {
                     console.log(error)
@@ -39,12 +39,12 @@ export default {
                         const data = error.response.data
                         this.userError = data.user ? data.user[0] : ''
                     } else {
-                        console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+                        console.log("EEEEEEEEEEEEEEEEEEEEEEE")
                     }
                 })
         },
         close() {
-            this.$emit("close")
+            this.$store.commit("toggleUserProfile");
         },
         fetchUserProfile(userId) {
             axios.get("accounts/profile/" + userId + "/")
@@ -60,10 +60,21 @@ export default {
                     console.log(err)
                 })
         },
+        handleESC(e) {
+            if (e.keyCode === 27) {
+                this.close()
+            }
+        },
         normalizeMsgDate
     },
     mounted() {
-        this.fetchUserProfile(this.userId)
+        if (this.$store.state.isUserProfileOpen && this.$store.state.openUserProfile) {
+            this.fetchUserProfile(this.$store.state.openUserProfile);
+        }
+        window.addEventListener('keydown', this.handleESC);
+    },
+    beforeUnmount() {
+        window.removeEventListener('keydown', this.handleESC);
     },
 }
 </script>

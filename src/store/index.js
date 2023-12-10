@@ -8,6 +8,8 @@ export default createStore({
     refresh: '',
     user: null,
     selectedChatId: 0,
+    isUserProfileOpen: false,
+    openUserProfile: null,
   },
   getters: {
   },
@@ -53,11 +55,27 @@ export default createStore({
       localStorage.removeItem("selectedChatId")
       state.selectedChatId = 0
     },
+    setUserInfo(state, userInfo) {
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      state.user = userInfo;
+    },
+    removeUserInfo(state) {
+      localStorage.removeItem("userInfo");
+      state.user = null;
+    },
+    toggleUserProfile(state, profileId = null) {
+      if (state.isUserProfileOpen) {
+        state.openUserProfile = null;
+      } else {
+        state.openUserProfile = profileId
+      }
+      state.isUserProfileOpen = !state.isUserProfileOpen;
+    },
     cleanStorage(state) {
       localStorage.clear();
       state.access = '';
       state.refresh = '';
-      state.user = '';
+      state.user = null;
       state.selectedChatId = 0;
     }
   },

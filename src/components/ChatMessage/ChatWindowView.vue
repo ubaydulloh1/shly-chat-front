@@ -11,8 +11,10 @@ export default {
   name: 'ChatWindowView',
   data() {
     return {
+      userInfo: null,
       inputMessageValue: '',
       chatObj: null,
+      chatType: null,
       isInterlocutorOnline: false,
       isInterlocutorTyping: false,
 
@@ -33,7 +35,6 @@ export default {
       showEmojiPicker: false,
     }
   },
-  props: ["chatId", "myId"],
   components: {
     MessageView,
     EmojiPicker,
@@ -42,9 +43,9 @@ export default {
     handleSendMessage(event) {
       event.preventDefault();
       if (this.inputMessageValue.trim() === '') return;
-      if (this.chatObj.chat.type === "PRIVATE" || this.chatObj.chat.type === "GROUP") {
+      if (this.chatType === "PRIVATE" || this.chatType === "GROUP") {
         this.handleSocketSendChatMessage()
-      } else if (this.chatObj.chat.type === "CHANNEL") {
+      } else if (this.chatType === "CHANNEL") {
         this.handleSocketSendChatMessage();
       } else return
 
@@ -85,7 +86,9 @@ export default {
     },
     closeOldConnection(oldId) {
       console.log(oldId)
-      this.webSocket.close()
+      if (this.webSocket) {
+        this.webSocket.close()
+      }
       this.webSocket = null
     },
     checkUserOnlineStatus(userId) {
@@ -99,7 +102,7 @@ export default {
     },
     NotifyUserTypingStatus() { },
     handleSocketOpen() {
-      if (this.chatObj && this.chatObj.chat.type === 'PRIVATE') {
+      if (this.chatObj && this.chatType === 'PRIVATE') {
         this.checkUserOnlineStatus(this.chatObj.chat.user.id)
       }
     },
@@ -118,7 +121,7 @@ export default {
         } else if (event_type == "private_chat_send_message") {
           const message = event_data.message
 
-          if (message.sender.id == this.myId) {
+          if (message.sender.id == this.$store.state.user.id) {
             message.is_own_message = true;
             for (let i = 0; i < this.messages.length; i++) {
               if (!this.messages[i].id && this.messages[i].content === message.content) {
@@ -133,7 +136,7 @@ export default {
 
           this.scrollToLastMessage()
 
-          if (event_data.message.sender.id === this.myId) {
+          if (event_data.message.sender.id === this.$store.state.user.id) {
             // this.$refs.messageAudio.play()
             console.log()
           } else {
@@ -141,14 +144,14 @@ export default {
             console.log()
           }
         } else if (event_type == "private_chat_user_typing_status") {
-          if (event_data.user_id !== this.myId) {
+          if (event_data.user_id !== this.$store.state.user.id) {
             this.isInterlocutorTyping = event_data.is_typing
           }
         } else if (event_type == "private_chat_edit_message") {
           for (let i = 0; i < this.messages.length; i++) {
             if (this.messages[i].id === event_data.message.id) {
               this.messages[i] = event_data.message;
-              if (this.messages[i].sender.id === this.myId) {
+              if (this.messages[i].sender.id === this.$store.state.user.id) {
                 this.messages[i].is_own_message = true;
               } else {
                 this.messages[i].is_own_message = false;
@@ -161,7 +164,7 @@ export default {
         } else if (event_type == "private_chat_see_message") {
           setTimeout(() => {
             for (let i = 0; i < this.messages.length; i++) {
-              if (this.messages[i].id === event_data.message.id) {
+              if (event_data.message && this.messages[i].id === event_data.message.id) {
                 this.messages[i] === event_data.message;
               }
             }
@@ -188,7 +191,8 @@ export default {
           }
         })
         .then(data => {
-          this.chatObj = data
+          this.chatObj = data;
+          this.chatType = this.chatObj.chat.type;
         })
         .catch(error => {
           console.log(error)
@@ -218,7 +222,7 @@ export default {
     handleMessageSearch() {
       this.messageLimit = 15;
       this.messageOffset = 0;
-      this.fetchMessages(this.chatId, false);
+      this.fetchMessages(this.$route.params.id, false);
     },
     normalizeMsgDate,
     handleTyping(e) {
@@ -237,7 +241,7 @@ export default {
 
       const message = {
         EVENT_TYPE: "private_chat_user_typing_status",
-        user_id: this.myId,
+        user_id: this.$store.state.user.id,
         is_typing: true
       }
       if (this.webSocket.readyState == WebSocket.OPEN) {
@@ -249,7 +253,7 @@ export default {
       this.amITyping = false
       const message = {
         EVENT_TYPE: "private_chat_user_typing_status",
-        user_id: this.myId,
+        user_id: this.$store.state.user.id,
         is_typing: false,
       }
       if (this.webSocket.readyState == WebSocket.OPEN) {
@@ -267,14 +271,12 @@ export default {
           }
         }
         this.isFetchingMessages = true
-
         this.isMessageLoading = true
         setTimeout(() => {
-          this.fetchMessages(this.chatId, true)
+          this.fetchMessages(this.$route.params.id, true)
           this.isMessageLoading = false
           this.isFetchingMessages = false
         }, 1000)
-
       }
     },
     handleBackToChats() {
@@ -284,7 +286,9 @@ export default {
       this.$refs.msgLstDiv.scrollTop = this.$refs.msgLstDiv.scrollHeight
     },
     openUserProfile() {
-      this.$emit("openProfile", this.chatObj.chat.user.id)
+      this.$store.commit("toggleUserProfile", this.chatObj.chat.user.id);
+
+      // this.$emit("openProfile", this.chatObj.chat.user.id)
     },
     editMessage(msgId, newMessageContent) {
       const message = {
@@ -325,24 +329,33 @@ export default {
       this.showEmojiPicker = !this.showEmojiPicker;
     }
   },
-  watch: {
-    chatId(newId, oldId) {
-      this.fetchChat(newId)
-      this.messageOffset = 0
-      this.allMessageCount = 0
-      this.messages = []
-      this.fetchMessages(this.chatId, false)
-      this.closeOldConnection(oldId)
-      this.isInterlocutorOnline = false
-      this.isInterlocutorTyping = false
+  created() {
+    this.$watch(
+      () => this.$route.params,
+      (toParams, previousParams) => {
+        this.closeOldConnection(previousParams.id);
+        this.messageOffset = 0;
+        this.allMessageCount = 0;
+        this.messages = [];
+        this.isInterlocutorOnline = false;
+        this.isInterlocutorTyping = false;
 
-      this.createWebsocketConnection(newId)
-    },
+        if (toParams) {
+          this.fetchChat(this.$route.params.id);
+          this.fetchMessages(toParams.id, false);
+          this.createWebsocketConnection(toParams.id);
+        }
+      }
+    )
+  },
+  beforeMount() {
+    this.fetchChat(this.$route.params.id);
   },
   mounted() {
-    this.fetchChat(this.chatId)
-    this.fetchMessages(this.chatId, true)
-    this.createWebsocketConnection(this.chatId)
+    this.userInfo = this.$store.state.user;
+
+    this.fetchMessages(this.$route.params.id, true)
+    this.createWebsocketConnection(this.$route.params.id)
 
     setTimeout(() => {
       const msgLst = this.$refs.msgLstDiv
@@ -352,43 +365,46 @@ export default {
     }, 1000)
   },
   beforeUnmount() {
-    this.webSocket.close();
+    if (this.webSocket) {
+      this.webSocket.close();
+    }
   }
 }
 </script>
 
 
 <template>
-  <div id="chat-area" class="is-flex is-flex-direction-column" v-if="chatObj">
+  <div id="chat-area" class="is-flex is-flex-direction-column">
 
     <div class="chat-profile-header is-flex px-3">
       <div class="is-flex is-justify-content-space-between" style="width: 100%">
         <div class="is-flex">
           <div class="is-flex">
             <div class="p-3 mr-2">
-              <i @click="handleBackToChats" class="fa-solid fa-arrow-left is-cursor-pointable"></i>
+              <i @click="$router.push('/')" class="fa-solid fa-arrow-left is-cursor-pointable"></i>
             </div>
+
             <figure class="image is-48x48 is-cursor-pointable" @click="openUserProfile">
-              <img v-if="chatObj.chat.type == 'PRIVATE'" class="is-rounded"
-                :src="chatObj.chat.user.avatar ? chatObj.chat.user.avatar : 'default_avatar.png'">
-              <img v-else-if="chatObj.chat.type == 'GROUP'" class="is-rounded"
-                :src="chatObj.chat.image ? chatObj.chat.image : 'default_group_avatar.svg'">
-              <img v-else-if="chatObj.chat.type == 'CHANNEL'" class="is-rounded"
-                :src="chatObj.chat.image ? chatObj.chat.image : 'channel_default_avatar.svg'">
+              <img v-if="chatType == 'PRIVATE'" class="is-rounded"
+                :src="chatObj.chat.user.avatar ? chatObj.chat.user.avatar : '/default_avatar.png'">
+              <img v-else-if="chatType == 'GROUP'" class="is-rounded"
+                :src="chatObj.chat.image ? chatObj.chat.image : '/default_group_avatar.svg'">
+              <img v-else-if="chatType == 'CHANNEL'" class="is-rounded"
+                :src="chatObj.chat.image ? chatObj.chat.image : '/channel_default_avatar.svg'">
             </figure>
 
           </div>
 
           <div class="has-text-left px-4">
-            <h4 class="is-size-6 is-cursor-pointable" v-if="chatObj.chat.type == 'PRIVATE'" @click="openUserProfile">
+            <h4 class="is-size-6 is-cursor-pointable" v-if="chatType == 'PRIVATE'" @click="openUserProfile">
               {{ chatObj.chat.user.first_name }} {{ chatObj.chat.user.last_name }}
             </h4>
 
-            <h4 class="is-size-6 is-cursor-pointable" v-else>
+            <h4 class="is-size-6 is-cursor-pointable" v-else-if="chatType === 'GROUP' || chatType === 'CHANNEL'">
               {{ chatObj.chat.name }}
             </h4>
 
-            <div v-if="chatObj.chat.type === 'PRIVATE'">
+            <div v-if="chatType === 'PRIVATE'">
               <p class="is-size-7 has-text-info typing-text" v-if="isInterlocutorOnline && isInterlocutorTyping">
                 typing ...
               </p>
@@ -396,7 +412,7 @@ export default {
               <p class="is-size-7" v-else>last seen at {{
                 normalizeMsgDate(chatObj.chat.user.last_seen_at) }}</p>
             </div>
-            <div v-else>
+            <div v-else-if="chatType === 'GROUP' || chatType === 'CHANNEL'">
               <p class="is-size-7">312 members</p>
             </div>
 
@@ -429,14 +445,13 @@ export default {
           <i class="fa-solid fa-spinner"></i>
         </div>
 
-        <div id="msgLstDiv" class="message-list is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
+        <div v-if="chatObj" id="msgLstDiv" class="message-list is-flex is-flex-direction-column-reverse" ref="msgLstDiv">
           <MessageView v-for="(message, index) in messages" :key="index" :message="message" :chatObj="chatObj"
             @editMessage="editMessage" @deleteMessage="deleteMessage" @seeMessage="seeMessage" />
         </div>
       </div>
 
-      <div
-        v-if="chatObj.chat.type === 'PRIVATE' || chatObj.chat.type === 'GROUP' || chatObj.chat.type === 'CHANNEL' && chatObj.chat.is_own_channel"
+      <div v-if="chatType === 'PRIVATE' || chatType === 'GROUP' || chatType === 'CHANNEL' && chatObj.chat.is_own_channel"
         class="message-input-container is-flex is-flex-direction-column">
         <form @submit.prevent="handleSendMessage">
 

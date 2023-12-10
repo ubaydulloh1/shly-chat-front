@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import ImageModalView from '../Modals/ImageModalView.vue';
 
 export default {
     name: "EditProfileView",
@@ -16,7 +17,11 @@ export default {
             },
             tempAvatarInputFile: null,
             isAccountDataLoading: false,
+            isOpenAvatarModal: false
         }
+    },
+    components: {
+        ImageModalView
     },
     methods: {
         fetchAccount() {
@@ -92,9 +97,13 @@ export default {
             <div class="control pt-1 pb-5">
                 <div class="is-flex-desktop" style="width: 100%;">
                     <div class="avatar-block is-flex px-5 py-1">
-                        <figure class="image is-64x64">
+                        <figure class="image is-64x64 is-clickable" @click="isOpenAvatarModal = !isOpenAvatarModal">
                             <img class="is-rounded" :src="userAccount.avatar ? userAccount.avatar : '/default_avatar.png'">
                         </figure>
+
+                        <ImageModalView v-if="isOpenAvatarModal"
+                            :image="userAccount.avatar ? userAccount.avatar : '/default_avatar.png'"
+                            @close="isOpenAvatarModal = !isOpenAvatarModal" />
                     </div>
                     <div class="avatar-upload file has-name is-success">
                         <label class="file-label">

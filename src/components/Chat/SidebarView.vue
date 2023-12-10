@@ -129,8 +129,12 @@ export default {
           </div>
         </button>
 
-        <ChatListBlockView v-for="chat in chats" :key="chat.chat.id" :chatObj="chat"
-          @chatSelected="chatSelected(chat.chat.id)" :isSelected="selectedChatId == chat.chat.id" :myId="myId" />
+        <div v-for="chat in chats" :key="chat.chat.id">
+          <router-link :to="{ 'name': 'chatWindow', 'params': { 'id': chat.chat.id } }" class="has-text-dark">
+            <ChatListBlockView :chatObj="chat" :myId="myId" />
+          </router-link>
+        </div>
+
         <div v-if="!chats.length" class="p-5">No chats</div>
       </div>
 
@@ -169,5 +173,9 @@ export default {
   #chat-list {
     height: 93%;
   }
+}
+
+.router-link-exact-active .chat-block {
+  background: rgb(226, 225, 225) !important;
 }
 </style>

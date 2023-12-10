@@ -1,4 +1,3 @@
-
 <script>
 import { normalizeMsgDate } from '@/utils';
 
@@ -7,11 +6,8 @@ export default {
   data() {
     return {}
   },
-  props: ["chatObj", "isSelected", "myId"],
+  props: ["chatObj", "myId"],
   methods: {
-    chatSelected() {
-      this.$emit("chatSelected")
-    },
     normalizeMsgDate,
   },
 }
@@ -19,15 +15,15 @@ export default {
 
 
 <template>
-  <div @click="chatSelected" :class="{ 'isSelected': isSelected }" class="chat-block is-flex">
+  <div class="chat-block is-flex">
     <div class="chat-photo p-2">
       <figure class="image is-48x48">
         <img v-if="chatObj.chat.type == 'PRIVATE'" class="is-rounded"
-          :src="chatObj.chat.user.avatar ? chatObj.chat.user.avatar : 'default_avatar.png'">
+          :src="chatObj.chat.user.avatar ? chatObj.chat.user.avatar : '/default_avatar.png'">
         <img v-else-if="chatObj.chat.type == 'GROUP'" class="is-rounded"
-          :src="chatObj.chat.image ? chatObj.chat.image : 'default_group_avatar.svg'">
+          :src="chatObj.chat.image ? chatObj.chat.image : '/default_group_avatar.svg'">
         <img v-else-if="chatObj.chat.type == 'CHANNEL'" class="is-rounded"
-          :src="chatObj.chat.image ? chatObj.chat.image : 'channel_default_avatar.svg'">
+          :src="chatObj.chat.image ? chatObj.chat.image : '/channel_default_avatar.svg'">
       </figure>
     </div>
 
@@ -90,10 +86,6 @@ export default {
   object-position: center;
   height: 100%;
   width: 100%;
-}
-
-.isSelected {
-  background: rgb(226, 225, 225) !important;
 }
 
 .unread-message-count {

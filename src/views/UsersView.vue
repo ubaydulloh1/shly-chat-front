@@ -45,7 +45,7 @@ export default {
                 })
         },
         openUserProfile(userId) {
-            this.$emit("openProfile", userId)
+            this.$store.commit("toggleUserProfile", userId);
         },
         searchUsers() {
             this.offset = 0;
@@ -102,7 +102,7 @@ export default {
                     <div class="card-image">
                         <figure class="image is-4by3">
                             <img v-if="user.avatar" :src="user.avatar" alt="Placeholder image">
-                            <img v-else src="../assets/images/default_avatar.png" alt="Placeholder image">
+                            <img v-else src="/default_avatar.png" alt="Placeholder image">
                         </figure>
                     </div>
                     <div class="card-content">
