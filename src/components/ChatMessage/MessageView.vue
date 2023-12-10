@@ -38,6 +38,9 @@ export default {
     reactMessage() {
       console.log("DOUBLE CLICKED!");
     },
+    openUserProfile(userId) {
+      this.$store.commit("toggleUserProfile", userId);
+    },
     normalizeMsgDate,
   },
   mounted() {
@@ -59,7 +62,7 @@ export default {
 
     <div class="is-flex">
       <div v-if="chatObj.chat.type === 'GROUP' && !message.is_own_message" class="pr-2">
-        <figure class="image is-32x32">
+        <figure class="image is-32x32 is-clickable" @click="openUserProfile(message.sender.id)">
           <img class="is-rounded" :src="message.sender.avatar ? message.sender.avatar : '/default_avatar.png'">
         </figure>
         <span class="is-size-7 is-italic">{{
