@@ -8,7 +8,7 @@ export default {
             autocompleteValue: "off",
             showPassword: false,
             user: {
-                username: "",
+                email: "",
                 password: ""
             },
             data: '',
@@ -17,12 +17,12 @@ export default {
     },
     methods: {
         handleLoginSubmit() {
-            if (!this.user.username || !this.user.password) {
+            if (!this.user.email || !this.user.password) {
                 this.error = 'username and password are required!'
                 return
             }
             const formData = {
-                username: this.user.username,
+                email: this.user.email,
                 password: this.user.password
             }
 
@@ -69,13 +69,10 @@ export default {
 
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                        <input class="input is-success" type="text" placeholder="Enter your username" autocomplete="off"
-                            v-model="user.username" ref="usernameInput" required>
+                        <input class="input is-success" type="email" placeholder="Enter your email" autocomplete="off"
+                            v-model="user.email" ref="usernameInput" required>
                         <span class="icon is-small is-left">
-                            <i class="fas fa-at"></i>
-                        </span>
-                        <span class="icon is-small is-right">
-                            <i class="fas fa-check"></i>
+                            <i class="fa-solid fa-envelope"></i>
                         </span>
                     </p>
                 </div>
@@ -119,9 +116,10 @@ export default {
 </template>
 
 <style scoped>
-.login{
+.login {
     margin-top: 10%;
 }
+
 .control .showpassword-icon {
     pointer-events: initial !important;
 }

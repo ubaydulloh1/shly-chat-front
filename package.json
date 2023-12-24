@@ -16,6 +16,7 @@
     "vue-fontawesome": "^0.0.2",
     "vue-router": "^4.0.3",
     "vue3-emoji-picker": "^1.1.8",
+    "vue3-verification-code-input": "^0.1.0",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

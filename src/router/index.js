@@ -1,7 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePageView from '../pages/HomePageView.vue'
 import LoginPageView from '@/pages/LoginPageView.vue'
-import RegisterView from '@/views/RegisterView.vue'
+import RegisterPageView from '@/pages/RegisterPageView.vue'
+import RegistrationFirstStepView from '@/components/Registration/FirstStepView.vue'
+import RegistrationSecondStepView from '@/components/Registration/SecondStepView.vue'
+
+
 import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import UsersView from '@/views/UsersView.vue'
 import ChatWindowView from '@/components/ChatMessage/ChatWindowView.vue'
@@ -25,7 +29,7 @@ const routes = [
         router: 'chatWindow'
       },
       {
-        path: '/chat/:id/',
+        path: 'chat/:id/',
         name: 'chatWindow',
         component: ChatWindowView,
         router: 'chatWindow'
@@ -49,17 +53,17 @@ const routes = [
     component: AccountView,
     children: [
       {
-        path: '/account/edit/',
+        path: 'edit/',
         name: "EditProfile",
         component: EditProfileView,
       },
       {
-        path: '/account/settings/',
+        path: 'settings/',
         name: "AccountSettings",
         component: AccountSettingsView,
       },
       {
-        path: '/account/change-password/',
+        path: 'change-password/',
         name: "AccountChangePassword",
         component: AccountChangePasswordView,
       },
@@ -68,7 +72,19 @@ const routes = [
   {
     path: "/register/",
     name: "Register",
-    component: RegisterView
+    component: RegisterPageView,
+    children: [
+      {
+        path: "",
+        name: "RegisterStepOne",
+        component: RegistrationFirstStepView,
+      },
+      {
+        path: "confirm/",
+        name: "RegisterStepTwo",
+        component: RegistrationSecondStepView,
+      },
+    ]
   },
   {
     path: "/reset-password/",
