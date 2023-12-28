@@ -16,13 +16,31 @@ export default {
     methods: {
         submitOTP(otp) {
             const url = "accounts/register/confirm/"
+
+            const registrationInfo = JSON.parse(window.localStorage.getItem("registrationINFO"));
             axios.post(
                 url,
                 {
-                    "token": "",
-                    "otp": otp
+                    "token": registrationInfo.token,
+                    "otp": otp.join("")
                 }
-            )
+            ).then(resp => {
+                return resp.data
+            }).then(data => {
+                console.log(data);
+                this.$router.push("/login/");
+            }).catch(err => {
+                const respData = err.response.data;
+
+                if (respData) {
+                    if (respData.token) {
+                        this.otpError = respData.token[0];
+                    }
+                    if (respData.otp) {
+                        this.otpError = respData.otp[0];
+                    }
+                }
+            })
         }
     }
 }

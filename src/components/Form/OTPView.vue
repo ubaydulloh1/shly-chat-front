@@ -1,6 +1,7 @@
 <script>
 export default {
     name: "OTPView",
+    emits: ["submitOTP"],
     components: {
     },
     props: ["count", "error"],

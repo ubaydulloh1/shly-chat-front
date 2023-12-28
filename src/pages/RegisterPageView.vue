@@ -73,8 +73,6 @@ export default {
 
         },
         checkUsername() {
-            console.log("========")
-
             if (this.user.username.length <= 3) {
                 this.usernameAvailable = false
                 return

@@ -10,6 +10,7 @@ export default createStore({
     selectedChatId: 0,
     isUserProfileOpen: false,
     openUserProfile: null,
+    registrationINFO: null,
   },
   getters: {
   },
@@ -70,6 +71,14 @@ export default createStore({
         state.openUserProfile = profileId
       }
       state.isUserProfileOpen = !state.isUserProfileOpen;
+    },
+    setRegistrationINFO(state, info) {
+      localStorage.setItem("registrationINFO", JSON.stringify(info));
+      state.registrationINFO = info;
+    },
+    removeRegistrationINFO(state) {
+      localStorage.removeItem("registrationINFO");
+      state.registrationINFO = null;
     },
     cleanStorage(state) {
       localStorage.clear();

@@ -33,7 +33,12 @@ export default {
                     }
                 })
                 .then((data) => {
-                    this.$emit("secondStep", data.token);
+                    const registrationInfo = {
+                        email: this.email,
+                        token: data.token,
+                    }
+                    this.$store.commit("setRegistrationINFO", registrationInfo)
+                    this.$router.push("/register/confirm/")
                 }).catch(error => {
 
                     console.log("ERROR: ", error.response.status);
