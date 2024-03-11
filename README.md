@@ -1,3 +1,1 @@
-# shly-chat-frontent
-
-### http://shly.uz
+### https://chat.shly.uz
